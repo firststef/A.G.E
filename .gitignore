@@ -230,3 +230,10 @@ dmypy.json
 
 .idea/
 venv/
+mingw/
+A.G.E.iml
+cpp_proj/AGEProj/.vs
+cpp_proj/AGEProj/AGEProj/Debug
+cpp_proj/AGEProj/AGEProj/Release
+cpp_proj/AGEProj/Debug
+cpp_proj/AGEProj/Release
