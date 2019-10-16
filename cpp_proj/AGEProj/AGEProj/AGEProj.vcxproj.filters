@@ -29,5 +29,8 @@
     <ClInclude Include="FunctionsAGE1.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -123,6 +123,7 @@
     <ClInclude Include="AGE.h" />
     <ClInclude Include="AlgorithmsAGE1.h" />
     <ClInclude Include="FunctionsAGE1.h" />
+    <ClInclude Include="json.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
