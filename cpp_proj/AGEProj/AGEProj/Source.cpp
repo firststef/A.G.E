@@ -8,7 +8,8 @@ int main(int argc, char** argv) {
 
 	if (argc <= 1)
 	{
-		printf("\nHELP: use age1 analysis for running source + the name of the function you want to analyze.\n");
+		printf("\nHELP: pass => age1 for running source + the name of the function you want to analyze.\n");
+		printf("\n  ex: AGEProj.exe age1 rastrigin\n");
 		system("pause");
 		return 0;
 	}

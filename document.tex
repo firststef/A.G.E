@@ -1,0 +1,146 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\title{AG Tema 0}
+\author{Stefan Petrovici}
+\date{October 2019}
+
+\pgfplotsset{compat=1.16}
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This report was made during the Genetic Algorithms course as part of an introductory     assignment that would express the basic concepts of this curricula.
+
+\subsection{Motivation}
+Many of the upcoming genetic algorithms we are going to study are based on intuitive concepts of nature. This report would show that sometimes deterministic algorithms are not as necessary as we might think, and also that sometimes, stepping back from a problem and looking for another angle might just be the solution.
+
+One of the more characteristic problems we encounter while learning about Genetic Algorithms is the Global Optimization Problem. A function may not have just a single minimum, but actually have a few local minima that would make it difficult to see which one is actually the solution. For that we are going to study two kinds of algorithm: deterministic and heuristic.
+
+\section{Method}
+
+We will first choose 4 functions\cite{benchmarking} that suit our task. These functions are more appropriate if they have many local minimas,because they will test the algorithms better.
+
+Also these function accept a finite number of parameters, and we will test how the algorithms performe when we will have 2, 5, and 20 dimensions.
+
+The global minimum for each of these functions is 0. The point that gives this value varies between the function.
+
+\break
+
+Rastrigin's Function
+$$ f(x) = A \cdot n + \sum_{i=1}^n \left[ x_i^2 - A \cdot cos(2 \pi x_i) \right],
+A = 10, x_i \in \left[ -5.12, 5.15 \right]$$
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\textwidth,height=6cm,keepaspectratio]{rastriginfcn.png}
+  \caption{Rastrigin's Function.}
+\end{figure}
+
+\break
+
+Sphere function
+$$ f(\textbf{x}) = f(x_1, x_2, ..., x_n) = {\sum_{i=1}^{n} x_i^{2}} $$
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\textwidth,height=6cm,keepaspectratio]{spherefcn}
+  \caption{Sphere Function.}
+\end{figure}
+
+Schwefel function
+$$ f(\textbf{x}) = f(x_1, x_2, ..., x_n) = 418.9829d -{\sum_{i=1}^{n} x_i sin(\sqrt{|x_i|})} $$
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\textwidth,height=6cm,keepaspectratio]{schwefelfcn.png}
+  \caption{Schwefel Function.}
+\end{figure}
+
+\break
+
+Rosenbrock Function
+$$ f(x, y)=\sum_{i=1}^{n}[b (x_{i+1} - x_i^2)^ 2 + (a - x_i)^2] $$
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=\textwidth,height=6cm,keepaspectratio]{rosenbrockfcn.png}
+  \caption{Rosenbrock Function.}
+\end{figure}
+
+\section{Experiment}
+For the Deterministic Algorithm for Global Optimization(D.A.G.O) i have chose an algorithm that resembles binary search and branch-and-bound\cite{binary}, in the sense that it divides the current given interval in two and naively measures the middle value of those sub-intervals. If the new value is smaller then we will look for new neighbours from the new value.
+
+For the Heuristic Algorithm for Global Optimization(H.A.G.O) i have chosen an algorithm that resembles hillclimbing, except that it does not work with the bitstring representation of the solution, but looks for new solutions at plus/minus epsilon.
+
+\section{Results}
+The chosen epsilon for the algorithms were about 0.01, so the values came back favorable for the deterministic ones. All the values from those came back close to the global minimum, which was 0 in this case.
+
+The heuristic algorithm showed its limits: for complex functions, such as rastrigin etc. it does not manage to find a good solution. This is also because the algorithm had a timeout limit, therefore these values are not exactly the best it can provide. Also it is shown that when the dimensionality grows, the error also grows, due to more complex iterations.
+
+\begin{figure}[!h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|}
+\rowfont{\bfseries} Name & AlgorithmType & Dimension & Result & RunTime \\ \hline
+rastrigin & deterministic & 2 & 0.009918 & 0.00040 \\
+rastrigin & deterministic & 5 & 0.024796 & 0.00043 \\
+rastrigin & deterministic & 20 & 0.099182 & 0.00169 \\
+schwefel & deterministic & 2 & 0.000041 & 0.01949 \\
+schwefel & deterministic & 5 & 0.000193 & 0.03109 \\
+schwefel & deterministic & 20 & 0.000773 & 0.10881 \\
+rosenbrock & deterministic & 2 & 0.003508 & 0.00031 \\
+rosenbrock & deterministic & 5 & 0.014032 & 0.00020 \\
+rosenbrock & deterministic & 20 & 0.066650 & 0.00085 \\
+sphere & deterministic & 2 & 0.000050 & 0.00027 \\
+sphere & deterministic & 5 & 0.000125 & 0.00028 \\
+sphere & deterministic & 20 & 0.000500 & 0.00085 \\
+\end{tabular}
+\caption{The Deterministic results from the algorithm}
+\end{figure}
+
+\begin{figure}[!h]
+\centerline{
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\rowfont{\bfseries} Name & AlgorithmType & Dimension & Mean & Max & Min & Median & MeanRunTime & StdDistrib \\ \hline
+rastrigin & heuristic & 2 & 17.68021 & 24.87877 & 8.95900 & 17.91134 & 0.41819 & 6.15868 \\
+rastrigin & heuristic & 5 & 44.34899 & 76.61167 & 12.94215 & 46.76892 & 1.30510 & 14.84982 \\
+rastrigin & heuristic & 20 & 171.43078 & 239.82538 & 97.53253 & 171.66728 & 20.46675 & 31.35698 \\
+schwefel & heuristic & 2 & 375.06847 & 572.48767 & 217.13969 & 335.57802 & 0.50770 & 147.73321 \\
+schwefel & heuristic & 5 & 929.81045 & 1441.21899 & 454.01654 & 917.96906 & 1.87225 & 226.78800 \\
+schwefel & heuristic & 20 & 3398.46616 & 4522.69238 & 2369.05884 & 3376.19214 & 29.17817 & 571.28253 \\
+rosenbrock & heuristic & 2 & 3.76382 & 12.29180 & 0.32211 & 0.36406 & 0.27174 & 5.22217 \\
+rosenbrock & heuristic & 5 & 11.33697 & 151.63109 & 0.07082 & 1.52969 & 0.43053 & 37.52215 \\
+rosenbrock & heuristic & 20 & 15.52329 & 19.42897 & 0.14097 & 16.32754 & 2.02218 & 3.39839 \\
+sphere & heuristic & 2 & 0.00001 & 0.00003 & 0.00000 & 0.00001 & 0.26923 & 0.00001 \\
+sphere & heuristic & 5 & 0.00005 & 0.00011 & 0.00001 & 0.00004 & 0.40770 & 0.00002 \\
+sphere & heuristic & 20 & 0.00017 & 0.00022 & 0.00011 & 0.00017 & 1.42898 & 0.00003 \\
+\end{tabular}}
+\caption{The Heuristic results from the algorithm}
+\end{figure}
+
+\break
+
+\section{Conlusions}
+It is obvious from these results that done correctly, the algorithms for guessing the real value of a minimum can offer great advantages to the programmer.
+
+\begin{thebibliography}
+
+\bibitem{benchmarking}
+BenchMarking Functions\\
+\url{http://benchmarkfcns.xyz}\\\\
+
+\bibitem{wikipedia}
+Wikipedia\\Global optimization\\
+\url{https://en.wikipedia.org/wiki/Global_optimization#Deterministic_methods}\\\\
+
+\bibitem{wikipedia2}
+Branch and Bound source\\
+\url{https://en.wikipedia.org/wiki/Branch_and_bound#cite_ref-8}\\\\
+
+\bibitem{binary}
+Global minimum Search Algorithm MIT\\
+\url{https://www.youtube.com/watch?v=ORo5IU9a55s&list=PL3940DD956CDF0622&index=38&t=2696s}\\\\
+
+\end{thebibliography}
+\end{document}

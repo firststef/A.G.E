@@ -2,6 +2,9 @@ import getopt
 import os
 import sys
 import threading
+import json
+from json import encoder
+import numpy
 
 project_root = './cpp_proj/AGEProj'
 executable_path = './cpp_proj/AGEProj/Release/'
@@ -20,7 +23,12 @@ def main(argv):
     print('================== A.G.E. script ==================')
     print('### 2019 - Petrovici Stefan ###\n')
 
-    opts, args = getopt.getopt(sys.argv[1:], "br", [])
+    if len(sys.argv) == 1:
+        print('HELP: pass -b for building the executable from the sln\n')
+        print('      pass -r for running the analysis on the available functions\n')
+        print('      pass -a to generate statistics\n')
+
+    opts, args = getopt.getopt(sys.argv[1:], "bra", [])
 
     # build
     if ('-b', '') in opts:
@@ -50,6 +58,66 @@ def main(argv):
 
         for t in threads:
             t.join()
+
+    # generate statistics
+    final_table = []
+    if ('-a', '') in opts:
+        for func in supported_functions_age1:
+            with open('output_' + func + '.json', 'r') as f:
+                encoder.FLOAT_REPR = lambda o: format(o, '.5f')
+                numpy.set_printoptions(formatter={"float_kind": lambda x: "%g" % x})
+                numpy.set_printoptions(precision=6)
+                data = json.load(f)
+
+                for analysis in data['analysis']:
+                    # deterministic
+                    d_table_line = {
+                        'name': data['function-name'],
+                        'algorithm_type': 'deterministic',
+                        'dimension': analysis['dimension'],
+                        'result': analysis['deterministic_results']['result'],
+                        'run_time': analysis['deterministic_results']['runtime'] / 1000000 # converting to seconds
+                    }
+                    final_table.append(d_table_line)
+
+                    # heuristic
+                    results = [float(n) for n in analysis['heuristic_results']['results']]
+                    h_table_line = {
+                        'name': data['function-name'],
+                        'algorithm_type': 'heuristic',
+                        'dimension': analysis['dimension'],
+                        'mean': numpy.mean(results),
+                        'max': numpy.max(results),
+                        'min': numpy.min(results),
+                        'median' : numpy.median(results),
+                        'mean_run_time': numpy.mean(analysis['heuristic_results']['deltas']) / 1000000, # converting to seconds
+                        'sd': numpy.std(results)
+                    }
+                    final_table.append(h_table_line)
+
+        with open('final_result.json', 'w') as final:
+            json.dump(final_table, final)
+
+        def sort_type(val):
+            if val['algorithm_type'] == 'deterministic':
+                return 0
+            return 1
+        final_table = sorted(final_table, key=sort_type)
+
+        printed_head = False
+        for line in final_table:
+            if not printed_head:
+                print(' & '.join([key.capitalize() for key, val in line.items()]), end=' \\\\\n')
+                printed_head = True
+                print()
+
+            prettified_strings = []
+            for key, val in line.items():
+                if type(val) == float or type(val) == numpy.float64:
+                    prettified_strings.append('{:.5f}'.format(val))
+                else:
+                    prettified_strings.append(str(val))
+            print(' & '.join([val for val in prettified_strings]), end=' \\\\\n')
 
 
 if __name__ == "__main__":
