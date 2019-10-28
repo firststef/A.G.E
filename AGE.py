@@ -9,13 +9,13 @@ import numpy
 project_root = './cpp_proj/AGEProj'
 executable_path = './cpp_proj/AGEProj/Release/'
 devenv_path = r'"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/"'
-supported_functions_age1 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
+supported_functions_age0 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
 
 
 def generate_output_func(name: str):
     os.environ["Path"] = os.path.abspath(executable_path)
     print('=== run on function ' + name + ' started ===')
-    os.system('call AGEProj age1 ' + name)
+    os.system('call AGEProj age0 ' + name)
     print('=== run on function ' + name + ' ended ===')
 
 
@@ -51,7 +51,7 @@ def main(argv):
     # run code
     if ('-r', '') in opts:
         threads = []
-        for func in supported_functions_age1:
+        for func in supported_functions_age0:
             t = threading.Thread(target=generate_output_func, args=(func,))
             t.start()
             threads.append(t)
@@ -62,7 +62,7 @@ def main(argv):
     # generate statistics
     final_table = []
     if ('-a', '') in opts:
-        for func in supported_functions_age1:
+        for func in supported_functions_age0:
             with open('output_' + func + '.json', 'r') as f:
                 encoder.FLOAT_REPR = lambda o: format(o, '.5f')
                 numpy.set_printoptions(formatter={"float_kind": lambda x: "%g" % x})
