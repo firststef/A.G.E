@@ -48,9 +48,9 @@ int main(int argc, char** argv) {
 	{
 		if (std::string(argv[2]) == std::string("sphere"))
 		{
-			AGE1::Sphere<2> func;
-			AGE1::Problem<2> prob{func, 0.1f};
-			auto test = AGE1::hillclimb_best_improve<2>(prob);
+			AGE1::Rastrigin<10> func;
+			AGE1::Problem<10> prob{func, 0.1f};
+			auto test = AGE1::simulated_annealing<10>(prob);
 			printf("%f", test.func_value);
 			system("pause");
 			auto u = 0;

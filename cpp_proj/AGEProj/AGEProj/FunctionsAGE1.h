@@ -41,7 +41,7 @@ namespace AGE1
 
 	constexpr float bitstring_to_interval(float left, float right, std::uint32_t number)
 	{
-		return float(left) + float(number) / two_at_32_m_1;
+		return left + float((double(number) ) / double(two_at_32_m_1) * double(right - left));
 	}
 
 	template<unsigned N>
@@ -64,8 +64,8 @@ namespace AGE1
 
 		float call(bitstring values[N]) override {
 			float sum = 0;
-			for (unsigned i = 1; i <= N; ++i) {
-				const Converter c{ values[i - 1].to_ulong() };
+			for (unsigned i = 0; i < N; ++i) {
+				const Converter c{ values[i].to_ulong() };
 
 				const float xi = bitstring_to_interval(this->search_domain.left, this->search_domain.right, c.ul);
 				sum += pow(xi, 2) - 10 * cos(2 * M_PI * xi);
@@ -83,8 +83,8 @@ namespace AGE1
 
 		float call(bitstring values[N]) override {
 			float sum = 0;
-			for (unsigned i = 1; i <= N; ++i) {
-				const Converter c{ values[i - 1].to_ulong() };
+			for (unsigned i = 0; i < N; ++i) {
+				const Converter c{ values[i].to_ulong() };
 
 				const float xi = bitstring_to_interval(this->search_domain.left, this->search_domain.right, c.ul);
 
@@ -103,8 +103,8 @@ namespace AGE1
 
 		float call(bitstring values[N]) override {
 			float sum = 0;
-			for (unsigned i = 1; i <= N; ++i) {
-				const Converter c{ values[i - 1].to_ulong() };
+			for (unsigned i = 0; i < N; ++i) {
+				const Converter c{ values[i].to_ulong() };
 
 				const float xi = bitstring_to_interval(this->search_domain.left, this->search_domain.right, c.ul);;
 				sum += pow(xi, 2);
@@ -125,9 +125,9 @@ namespace AGE1
 			Converter c{ values[0].to_ulong() };
 			float xip1 = bitstring_to_interval(this->search_domain.left, this->search_domain.right, c.ul);
 
-			for (unsigned i = 1; i < N; ++i) {
+			for (unsigned i = 0; i < N - 1; ++i) {
 				const float xi = xip1;
-				c.ul = values[i].to_ulong();
+				c.ul = values[i + 1].to_ulong();
 				xip1 = bitstring_to_interval(this->search_domain.left, this->search_domain.right, c.ul);
 
 				sum += 100 * pow((xip1 - pow(xi, 2)), 2) + pow((1 - xi), 2);
