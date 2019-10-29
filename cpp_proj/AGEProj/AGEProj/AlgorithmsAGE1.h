@@ -18,12 +18,12 @@ namespace AGE1
 	NDimensionPoint<N> get_random_point()
 	{
 		NDimensionPoint<N> point;
-		srand(time(nullptr));
+		srand(std::chrono::system_clock::now().time_since_epoch().count());
 		
 		for (unsigned i = 0; i < N; ++i)
 		{
-			unsigned long long random[5] = { rand(), rand(), rand(), rand(), rand() };
-			unsigned long long r = random[0] + (random[1] << 14ull) + (random[2] << 28ull) + (random[3] << 42ull) + (random[4] << 56ull);
+			unsigned random[3] = { rand(), rand(), rand()};
+			std::uint32_t r = random[0] + (random[1] << 14ul) + (random[2] << 28ul);
 			
 			point.coordinates[i] = r;
 		}

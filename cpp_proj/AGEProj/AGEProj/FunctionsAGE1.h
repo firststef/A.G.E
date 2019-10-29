@@ -3,15 +3,12 @@
 #include "AGE.h"
 #include <bitset>
 #include <string>
-#include <utility>
 #include <math.h>
 #include <cmath>
 
 namespace AGE1
 {
-	constexpr int L = sizeof(unsigned long) * 8;
-	//on Windows sizeof(unsigned long) eq 4, but on Linux sizeof(unsigned long) is 8
-	//to use the std::bitset function .to_ulong() safely, we use the above init
+	constexpr int L = sizeof(std::uint32_t) * 8;
 
 	using bitstring = std::bitset<L>;
 
@@ -19,7 +16,7 @@ namespace AGE1
 	{
 		union
 		{
-			unsigned long ul;
+			std::uint32_t ul;
 			float f;
 		};
 	};
@@ -42,9 +39,9 @@ namespace AGE1
 		float func_value;
 	};
 
-	constexpr float bitstring_to_interval(float left, float right, unsigned number)
+	constexpr float bitstring_to_interval(float left, float right, std::uint32_t number)
 	{
-		return left + number / (sizeof(unsigned long) == 4 ? two_at_32_m_1: two_at_64_m_1) * (right - left) ;
+		return float(left) + float(number) / two_at_32_m_1;
 	}
 
 	template<unsigned N>
@@ -55,7 +52,7 @@ namespace AGE1
 		const float global_minimum;
 
 		PerfTestFunction(const std::string name, const Interval domain, const float global_minimum)
-			: name(std::move(name)), search_domain(domain), global_minimum(global_minimum) {}
+			: name(name), search_domain(domain), global_minimum(global_minimum) {}
 
 		virtual float call(bitstring values[N]) = 0;
 	};
@@ -109,7 +106,7 @@ namespace AGE1
 			for (unsigned i = 1; i <= N; ++i) {
 				const Converter c{ values[i - 1].to_ulong() };
 
-				const float xi = c.f;
+				const float xi = bitstring_to_interval(this->search_domain.left, this->search_domain.right, c.ul);;
 				sum += pow(xi, 2);
 			}
 
@@ -126,8 +123,7 @@ namespace AGE1
 			float sum = 0;
 
 			Converter c{ values[0].to_ulong() };
-			float xip1;
-			bitstring_to_interval(this->search_domain.left, this->search_domain.right, c.ul);
+			float xip1 = bitstring_to_interval(this->search_domain.left, this->search_domain.right, c.ul);
 
 			for (unsigned i = 1; i < N; ++i) {
 				const float xi = xip1;
