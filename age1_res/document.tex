@@ -86,107 +86,254 @@ The pseudocode for Simulated Annealing best ascent is shown below:
 \end{tabbing}
 
 \subsection{Description}
-Firstly, we have to talk about the representation of our solution. In this method we will choose the \textbf{bitstring} representation of real floating numbers. Float type values have 4 bytes, consisting of a sign bit, an 8-bit excess-127 binary exponent, and a 23-bit mantissa. 
+Firstly, we have to talk about the representation of our solution. 
+Our solution would be N  \textbf{bitstrings}, where N will be the number of dimensions we will compute on each function.
+A Hamming Neighbor is a bitstring that differs by only one bit from the current solution.
 
-By modifying one bit of the value we can change the sign of the number, the 
+The Iterated Hill-Climbing with Best Improvement Selection Algorithm passes through all of the Hamming-1 neighbours of a bitstring (named initial candidate) and if it finds a better candidate it will continue to run with this candidate. The algorithm stops when there is no other candidate that is better then our current one.
+
+The Iterated Hill-Climbing with First Improvement Selection has a similar behaviour to the Best version, except that when in finds a better candidate it immediately takes him, without considering the other neighbors.
+
+The Simulated Annealing Algorithm picks a random neighbor, tests if he is better than its current solution and if that is valid, it replaces the current candidate. What is most important though is the fact that this algorithm permits the choosing of a weaker, non-optimal candidate with the purpose that this weaker candidate might in turn lead to the global optimum.
+
+\subsection{Implementation}
+In this method we will choose the \textbf{bitstring} representation of real floating numbers. Float type values have 4 bytes, consisting of a sign bit, an 8-bit excess-127 binary exponent, and a 23-bit mantissa. By modifying one bit of the value we can change the sign of the number, the mantissa or the exponent.
+Float has a 7-digit precision, and by using a formula for binding this representation to the domain interval we make sure we can check as many valid candidates as possible.
+$$ X_r_e_a_l = a+decimal(x_b_i_t_i)*(b-a)/(2^n-1)$$
+The data structure we are going to use is a standard library std::bitset<T>. This structure is useful because it places each bit in an actual physical bit and also that it is allocated on stack, meaning it will be faster to access than other options like std::vector<bool> or std::vector<int>.
 
 \section{Experiment}
 
-\begin{figure}[ht] 
+\begin{figure}[h] 
   \begin{subfigure}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=0.75\linewidth]{rastriginfcn.png} 
-    \caption{Initial condition} 
+    \caption{Rastrigin Function} 
     \label{fig7:a} 
     \vspace{4ex}
   \end{subfigure}%% 
   \begin{subfigure}[b]{0.5\linewidth}
     \centering
-    \includegraphics[width=0.75\linewidth]{rastriginfcn.png} 
-    \caption{Rupture} 
+    \includegraphics[width=0.75\linewidth]{schwefelfcn.png} 
+    \caption{Schwefel Function} 
     \label{fig7:b} 
     \vspace{4ex}
   \end{subfigure} 
   \begin{subfigure}[b]{0.5\linewidth}
     \centering
-    \includegraphics[width=0.75\linewidth]{rastriginfcn.png} 
-    \caption{DFT, Initial condition} 
+    \includegraphics[width=0.75\linewidth]{rosenbrockfcn.png} 
+    \caption{Rosenbrock Function} 
     \label{fig7:c} 
   \end{subfigure}%%
   \begin{subfigure}[b]{0.5\linewidth}
     \centering
-    \includegraphics[width=0.75\linewidth]{rastriginfcn.png} 
-    \caption{DFT, rupture} 
+    \includegraphics[width=0.75\linewidth]{spherefcn.png} 
+    \caption{Sphere Function} 
     \label{fig7:d} 
   \end{subfigure} 
   \caption{The 4 functions}
   \label{fig7} 
 \end{figure}
 
-Both Hill climbing and Simulated Annealing are anytime algorithms: they can return a valid solution even if they are interrupted at any time before it ends. 
+Both Hill climbing and Simulated Annealing are anytime algorithms: they can return a valid solution even if they are interrupted at any time before it ends. For each function, the 3 algorithms ran 30 times (without the inner loops) on 2,5 and 30 dimensions each. For a function an analysis took about 5 minutes. If we had stopped at 4 minutes we could noticed some of the values(especially for the Schwefel function) would be ~200 function units worse, but for the rest it wouldn't change much.
 
-\begin{figure}[!h]
-\centering
-\begin{tabular}{|l|l|l|l|l|l|}
-\rowfont{\bfseries} Name & AlgorithmType & Dimension & Result & RunTime \\ \hline
-rastrigin & deterministic & 2 & 0.009918 & 0.00040 \\
-rastrigin & deterministic & 5 & 0.024796 & 0.00043 \\
-rastrigin & deterministic & 20 & 0.099182 & 0.00169 \\
-schwefel & deterministic & 2 & 0.000041 & 0.01949 \\
-schwefel & deterministic & 5 & 0.000193 & 0.03109 \\
-schwefel & deterministic & 20 & 0.000773 & 0.10881 \\
-rosenbrock & deterministic & 2 & 0.003508 & 0.00031 \\
-rosenbrock & deterministic & 5 & 0.014032 & 0.00020 \\
-rosenbrock & deterministic & 20 & 0.066650 & 0.00085 \\
-sphere & deterministic & 2 & 0.000050 & 0.00027 \\
-sphere & deterministic & 5 & 0.000125 & 0.00028 \\
-sphere & deterministic & 20 & 0.000500 & 0.00085 \\
-\end{tabular}
-\caption{The Deterministic results from the algorithm}
-\end{figure}
+\subsection{Rastrigin}
 
-\begin{figure}[!h]
+Hillclimbing-best on Rastrigin has produced the following results:
+\vspace{5mm}
+
 \centerline{
-\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
-\rowfont{\bfseries} Name & AlgorithmType & Dimension & Mean & Max & Min & Median & MeanRunTime & StdDistrib \\ \hline
-rastrigin & heuristic & 2 & 17.68021 & 24.87877 & 8.95900 & 17.91134 & 0.41819 & 6.15868 \\
-rastrigin & heuristic & 5 & 44.34899 & 76.61167 & 12.94215 & 46.76892 & 1.30510 & 14.84982 \\
-rastrigin & heuristic & 20 & 171.43078 & 239.82538 & 97.53253 & 171.66728 & 20.46675 & 31.35698 \\
-schwefel & heuristic & 2 & 375.06847 & 572.48767 & 217.13969 & 335.57802 & 0.50770 & 147.73321 \\
-schwefel & heuristic & 5 & 929.81045 & 1441.21899 & 454.01654 & 917.96906 & 1.87225 & 226.78800 \\
-schwefel & heuristic & 20 & 3398.46616 & 4522.69238 & 2369.05884 & 3376.19214 & 29.17817 & 571.28253 \\
-rosenbrock & heuristic & 2 & 3.76382 & 12.29180 & 0.32211 & 0.36406 & 0.27174 & 5.22217 \\
-rosenbrock & heuristic & 5 & 11.33697 & 151.63109 & 0.07082 & 1.52969 & 0.43053 & 37.52215 \\
-rosenbrock & heuristic & 20 & 15.52329 & 19.42897 & 0.14097 & 16.32754 & 2.02218 & 3.39839 \\
-sphere & heuristic & 2 & 0.00001 & 0.00003 & 0.00000 & 0.00001 & 0.26923 & 0.00001 \\
-sphere & heuristic & 5 & 0.00005 & 0.00011 & 0.00001 & 0.00004 & 0.40770 & 0.00002 \\
-sphere & heuristic & 20 & 0.00017 & 0.00022 & 0.00011 & 0.00017 & 1.42898 & 0.00003 \\
-\end{tabular}}
-\caption{The Heuristic results from the algorithm}
-\end{figure}
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(min.) & StdDev \\ \hline
+2 & 0.00000 & 0.00000 & 0.00000 & 0.00000 & 0.00037 & 0.00019 & 0.00000 \\
+5 & 0.00000 & 0.00000 & 0.00000 & 0.00000 & 0.00275 & 0.00137 & 0.00000 \\
+30 & 0.00000 & 0.00000 & 0.00000 & 0.00000 & 0.42538 & 0.21269 & 0.00000 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
 
-\break
+Hillclimbing-first on Rastrigin has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 32.79528 & 48.31204 & 12.89403 & 28.94584 & 0.30109 & 0.15054 & 10.34233 \\
+5 & 89.89455 & 120.2332 & 61.13435 & 88.61257 & 0.30113 & 0.15056 & 17.24461 \\
+30 & 565.88526 & 694.0710 & 440.6955 & 572.75143 & 0.30146 & 0.15073 & 55.83071 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+Simulated Annealing on Rastrigin has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 1.05696 & 1.66620 & 0.16476 & 1.11902 & 3.00601 & 1.50300 & 0.41327 \\
+5 & 3.66980 & 7.62761 & 1.31342 & 3.61088 & 3.00601 & 1.50300 & 1.11049 \\
+30 & 31.46571 & 43.14999 & 17.94916 & 31.79051 & 3.00602 & 1.50301 & 6.33809 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+\subsection{Schwefel}
+
+Hillclimbing-best on Schwefel has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 0.00122 & 0.00122 & 0.00122 & 0.00122 & 0.00123 & 0.00062 & 0.00000 \\
+5 & 0.00317 & 0.00317 & 0.00317 & 0.00317 & 0.01268 & 0.00634 & 0.00000 \\
+30 & 0.01660 & 0.01660 & 0.01660 & 0.01660 & 2.41241 & 1.20620 & 0.00000 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+Hillclimbing-first on Schwefel has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 604.45936 & 856.69659 & 172.89160 & 633.80743 & 0.30109 & 0.15055 & 178.29133 \\
+5 & 1946.29082 & 2660.72168 & 1215.65112 & 1974.07056 & 0.30113 & 0.15057 & 427.47421 \\
+30 & 12294.58330 & 14812.13867 & 9339.17969 & 12382.93994 & 0.30148 & 0.15074 & 1208.66385 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+Simulated Annealing on Schwefel has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 56.25339 & 131.42291 & 0.13794 & 35.87091 & 3.00601 & 1.50300 & 53.59844 \\
+5 & 203.26813 & 587.84790 & 2.15259 & 187.91071 & 3.00601 & 1.50301 & 125.55201 \\
+30 & 2282.76950 & 3094.87305 & 1772.73828 & 2239.87109 & 3.00602 & 1.50301 & 333.35353 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+\subsection{Sphere}
+
+Hillclimbing-best on Sphere has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 0.00000 & 0.00000 & 0.00000 & 0.00000 & 0.00009 & 0.00004 & 0.00000 \\
+5 & 0.00000 & 0.00000 & 0.00000 & 0.00000 & 0.00053 & 0.00026 & 0.00000 \\
+30 & 0.00000 & 0.00000 & 0.00000 & 0.00000 & 0.07298 & 0.03649 & 0.00000 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+Hillclimbing-first on Sphere has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 12.96183 & 32.76800 & 0.32572 & 9.17156 & 0.30109 & 0.15055 & 10.32909 \\
+5 & 41.14571 & 68.45519 & 11.06628 & 42.82627 & 0.30112 & 0.15056 & 14.07320 \\
+30 & 266.07762 & 392.56210 & 137.92204 & 267.10228 & 0.30141 & 0.15071 & 49.44672 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+Simulated Annealing on Sphere has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 0.09440 & 0.34697 & 0.00567 & 0.07151 & 3.00601 & 1.50300 & 0.08863 \\
+5 & 0.52180 & 1.62801 & 0.07646 & 0.46727 & 3.00603 & 1.50301 & 0.35979 \\
+30 & 5.23466 & 8.42584 & 2.48623 & 5.01753 & 3.00601 & 1.50301 & 1.53626 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+\subsection{Rosenbrock}
+
+Hillclimbing-best on Rosenbrock has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 0.61137 & 0.61137 & 0.61137 & 0.61137 & 0.00148 & 0.00074 & 0.00000 \\
+5 & 3.32159 & 3.32159 & 3.32159 & 3.32159 & 0.00438 & 0.00219 & 0.00000 \\
+30 & 28.06901 & 28.06901 & 28.06901 & 28.06901 & 0.45371 & 0.22685 & 0.00000 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+Hillclimbing-first on Rosenbrock has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 122450.46 & 695256.31 & 339.85 & 18353.16 & 0.30 & 0.150 & 176665.46 \\
+5 & 654464.53 & 1591305.62 & 92365.70 & 638715.37 & 0.30 & 0.150 & 401149.81 \\
+30 & 6071569.85 & 9449637.00 & 3750092.25 & 6035927.25 & 0.30 & 0.150 & 1463527.42 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+Simulated Annealing on Rosenbrock has produced the following results:
+\vspace{5mm}
+
+\centerline{
+\begin{tabular}{|l||l|l|l|l|l|l|l}
+\rowfont{\bfseries} Dim. & Mean & Max & Min & Median & MRT(sec.) & RT(sec.) & StdDev \\ \hline
+2 & 1.24227 & 7.21554 & 0.03192 & 0.76147 & 3.00601 & 1.50300 & 1.51518 \\
+5 & 36.62623 & 640.08514 & 2.04132 & 5.33220 & 3.00602 & 1.50301 & 114.71004 \\
+30 & 3359.21576 & 8925.05859 & 36.19930 & 3727.94263 & 3.00601 & 1.50301 & 2616.54935 \\
+\end{tabular}
+}
+\caption{}
+\vspace{5mm}
+
+From these results we can observe that in most cases, a larger number of dimensions leads to a more erroneous solution, and a larger number of iterations (and the observation before about time) leads to a better solution. For more dimensions we might need to do more iterations to get an equally better result. 
 
 \section{Conlusions}
-It is obvious from these results that done correctly, the algorithms for guessing the real value of a minimum can offer great advantages to the programmer.
+We can see that Hill Climbing and Simulated Annealing produce similar results. Simulated Annealing reaches solution faster, while HillClimbing reaches them more precisely. This is because HC iterates between its neighbors, while SA will sample randomly.
 
 \begin{thebibliography}
 
 \bibitem{benchmarking}
 BenchMarking Functions\\
-\url{http://benchmarkfcns.xyz}\\\\
-
+\url{http://benchmarkfcns.xyz}
 \bibitem{wikipedia}
 Wikipedia\\Global optimization\\
-\url{https://en.wikipedia.org/wiki/Global_optimization#Deterministic_methods}\\\\
-
-\bibitem{wikipedia2}
-Branch and Bound source\\
-\url{https://en.wikipedia.org/wiki/Branch_and_bound#cite_ref-8}\\\\
-
-\bibitem{binary}
-Global minimum Search Algorithm MIT\\
-\url{https://www.youtube.com/watch?v=ORo5IU9a55s&list=PL3940DD956CDF0622&index=38&t=2696s}\\\\
-
+\url{https://en.wikipedia.org/wiki/Global_optimization#Deterministic_methods}
+\bibitem{hillclimb}
+Hill Climbing\\Optimisation algorithm\\
+\url{https://en.wikipedia.org/wiki/Hill_climbing}
+\bibitem{simulated_annealing}
+Simulated Annealing\\Optimisation algorithm\\
+\url{https://en.wikipedia.org/wiki/Simulated_annealing}
+\bibitem{float}
+Float\\C Data Type\\
+\url{https://docs.microsoft.com/en-us/cpp/c-language/type-float?view=vs-2019}
 \end{thebibliography}  
 \end{document}
