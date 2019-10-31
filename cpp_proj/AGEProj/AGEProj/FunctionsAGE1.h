@@ -51,7 +51,7 @@ namespace AGE1
 		const Interval search_domain;
 		const float global_minimum;
 
-		PerfTestFunction(const std::string name, const Interval domain, const float global_minimum)
+		PerfTestFunction(std::string name, const Interval domain, const float global_minimum)
 			: name(name), search_domain(domain), global_minimum(global_minimum) {}
 
 		virtual float call(bitstring values[N]) = 0;

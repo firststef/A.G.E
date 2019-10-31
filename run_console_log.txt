@@ -1,0 +1,62 @@
+C:\Users\Stefan\AppData\Local\Programs\Python\Python37-32\python.exe D:/facultate/anul_2/A.G.E/AGE.py --run age1
+================== A.G.E. script ==================
+### 2019 - Petrovici Stefan ###
+
+=== run on function rastrigin started === at 2019-10-31 11:22:58.825723
+=== run on function schwefel started === at 2019-10-31 11:22:58.825723
+=== run on function rosenbrock started === at 2019-10-31 11:22:58.825723
+=== run on function sphere started === at 2019-10-31 11:22:58.826688
+================== A.G.E. source ==================
+### 2019 - Petrovici Stefan ###
+Analyzer is running, please wait.
+The output file (.json format) will be generated in this directory.
+Started HC-Best on sphere
+Ended HC-Best on sphere
+Started HC - first on sphere
+Ended HC - first on sphere
+Started SA on sphere
+Ended SA on sphere
+Analysis finished
+=== run on function sphere ended === at 2019-10-31 11:22:58.826688
+total time on sphereis 0:04:59.868839
+================== A.G.E. source ==================
+### 2019 - Petrovici Stefan ###
+Analyzer is running, please wait.
+The output file (.json format) will be generated in this directory.
+Started HC-Best on rastrigin
+Ended HC-Best on rastrigin
+Started HC - first on rastrigin
+Ended HC - first on rastrigin
+Started SA on rastrigin
+Ended SA on rastrigin
+Analysis finished
+=== run on function rastrigin ended === at 2019-10-31 11:22:58.825723
+total time on rastriginis 0:05:10.160580
+================== A.G.E. source ==================
+### 2019 - Petrovici Stefan ###
+Analyzer is running, please wait.
+The output file (.json format) will be generated in this directory.
+Started HC-Best on rosenbrock
+Ended HC-Best on rosenbrock
+Started HC - first on rosenbrock
+Ended HC - first on rosenbrock
+Started SA on rosenbrock
+Ended SA on rosenbrock
+Analysis finished
+=== run on function rosenbrock ended === at 2019-10-31 11:22:58.825723
+total time on rosenbrockis 0:05:11.024158
+================== A.G.E. source ==================
+### 2019 - Petrovici Stefan ###
+Analyzer is running, please wait.
+The output file (.json format) will be generated in this directory.
+Started HC-Best on schwefel
+Ended HC-Best on schwefel
+Started HC - first on schwefel
+Ended HC - first on schwefel
+Started SA on schwefel
+Ended SA on schwefel
+Analysis finished
+=== run on function schwefel ended === at 2019-10-31 11:22:58.825723
+total time on schwefelis 0:06:09.336982
+
+Process finished with exit code 0

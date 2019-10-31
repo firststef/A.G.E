@@ -46,20 +46,37 @@ int main(int argc, char** argv) {
 	}
 	else if (std::string(argv[1]) == std::string("age1"))
 	{
-		if (std::string(argv[2]) == std::string("sphere"))
+		if (std::string(argv[2]) == std::string("rastrigin"))
 		{
-			AGE1::Rastrigin<10> func;
-			AGE1::Problem<10> prob{func, 0.1f};
-			auto test = AGE1::simulated_annealing<10>(prob);
-			printf("%f", test.func_value);
-			system("pause");
-			auto u = 0;
+			AGE1::AlgorythmAnalyzerAGE1<AGE1::Rastrigin> analyzer_rastr;
+			analyzer_rastr.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("schwefel"))
+		{
+			AGE1::AlgorythmAnalyzerAGE1<AGE1::Schwefel> analyzer_sch;
+			analyzer_sch.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("rosenbrock"))
+		{
+			AGE1::AlgorythmAnalyzerAGE1<AGE1::Rosenbrock> analyzer_rsn;
+			analyzer_rsn.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("sphere"))
+		{
+			AGE1::AlgorythmAnalyzerAGE1<AGE1::Sphere> analyzer_sph;
+			analyzer_sph.create_output_file();
+		}
+		else
+		{
+			printf("Function not supported\n");
 		}
 	}
 	else
 	{
 		printf("Command not recognized\n");
 	}
+
+	printf("Analysis finished\n");
 
 	return 1;
 }

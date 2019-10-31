@@ -5,25 +5,74 @@
 #include <chrono>
 #include <random>
 
+#define CONCAT3(x, y, z) x##y##z
+#define CONCAT4(x, y, z, w) x##y##z##w
+
+#define REGISTER_DIMENSION(N)\
+Function<N> CONCAT3(f, _dim_, N); \
+Problem<N> CONCAT3(problem, _dim_, N) { {CONCAT3(f, _dim_, N)} }; \
+
+#define REGISTER_FUNCTION(function, N)\
+HeuristicRunWrapper<N> CONCAT4(run_,function,_,N);\
+for (unsigned repeat = 0; repeat < 30; ++repeat)\
+{\
+	auto begin = std::chrono::system_clock::now();\
+\
+	const auto res = function<N>(CONCAT3(problem,_dim_,N));\
+	CONCAT4(run_,function,_,N).func_values[repeat] = res.func_value;\
+	for (unsigned i = 0; i < 2; ++i)\
+	{\
+		Converter c;\
+		c.ul = res.point.coordinates[i].to_ulong();\
+		CONCAT4(run_,function,_,N).coordinates[repeat][i] = c.f;\
+	}\
+\
+	auto finish = std::chrono::system_clock::now();\
+	CONCAT4(run_,function,_,N).deltas[repeat] = std::chrono::duration_cast<std::chrono::microseconds>(finish - begin).count();\
+}\
+std::string CONCAT4(stringified_run_,function,_,N)[30];\
+for (unsigned repeat = 0; repeat < 30; ++repeat)\
+{\
+	CONCAT4(stringified_run_,function,_,N)[repeat] = std::to_string(CONCAT4(run_,function,_,N).func_values[repeat]);\
+}
+
+#define DUMP_ANALYSIS_TO_JSON(function, N)\
+{\
+	{"algorythm-name",#function},\
+	{"dimension", N},\
+	{"results", CONCAT4(stringified_run_,function,_,N)},\
+	{"deltas", CONCAT4(run_,function,_,N).deltas},\
+	{"coordinates", CONCAT4(run_,function,_,N).coordinates}\
+}\
+
 namespace AGE1
 {
 	template<unsigned N>
 	struct Problem
 	{
 		PerfTestFunctor<N> functor;
-		float precision;
 	};
 
 	template<unsigned N>
 	NDimensionPoint<N> get_random_point()
 	{
 		NDimensionPoint<N> point;
-		srand(std::chrono::system_clock::now().time_since_epoch().count());
+		srand(time(nullptr));
 		
 		for (unsigned i = 0; i < N; ++i)
 		{
-			unsigned random[3] = { rand(), rand(), rand()};
-			std::uint32_t r = random[0] + (random[1] << 14ul) + (random[2] << 28ul);
+			Converter c;
+			c.f = std::numeric_limits<float>::infinity();
+			
+			std::uint32_t r = std::numeric_limits<float>::infinity();
+
+			c.ul = r;
+			while (isnan<float>(c.f) || isinf<float>(c.f))
+			{
+				unsigned random[3] = { rand(), rand(), rand() };
+				r = random[0] + (random[1] << 14ul) + (random[2] << 28ul);
+				c.ul = r;
+			}
 			
 			point.coordinates[i] = r;
 		}
@@ -39,6 +88,7 @@ namespace AGE1
 
 		const unsigned T_MAX = 30;
 		unsigned Temperature = 0;
+		const auto start = std::chrono::system_clock::now();
 
 		do
 		{
@@ -57,6 +107,12 @@ namespace AGE1
 					{
 						auto neighbor = random_solution;
 						neighbor.coordinates[i][l].flip();
+
+						//Safety check for bit modification
+						Converter c;
+						c.ul = neighbor.coordinates[i].to_ulong();
+						if (isinf<float>(c.f) || isnan<float>(c.f))
+							continue;
 
 						auto neighbor_minimum = problem.functor(neighbor.coordinates);
 
@@ -87,7 +143,7 @@ namespace AGE1
 			}
 
             Temperature += 1;
-		} while (Temperature < T_MAX);
+		} while (Temperature < T_MAX && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() < 6 * N);
 
 		
 		return ReturnWrapper<N>{best_solution, best_minimum};
@@ -101,6 +157,7 @@ namespace AGE1
 
 		const unsigned T_MAX = 30;
 		unsigned Temperature = 0;
+		const auto start = std::chrono::system_clock::now();
 
 		do
 		{
@@ -113,29 +170,43 @@ namespace AGE1
 				NDimensionPoint<N> neighbor_best;
 				float neighbor_best_minimum = std::numeric_limits<float>::infinity();
 
-				auto search_neighbours = [&]()->bool
+				bool found_min = false;
+
+				unsigned random_array[N*L][2];
+				for (unsigned i = 0; i < N; ++i)
 				{
-					for (unsigned i = 0; i < N; ++i)
+					for (unsigned l = 0; l < L; ++l)
 					{
-						for (unsigned l = 0; l < L; ++l)
-						{
-							auto neighbor = random_solution;
-							neighbor.coordinates[i][l].flip();
-
-							auto neighbor_minimum = problem.functor(neighbor.coordinates);
-
-							if (neighbor_minimum < neighbor_best_minimum)
-							{
-								neighbor_best = neighbor;
-								neighbor_best_minimum = neighbor_minimum;
-								return true;
-							}
-						}
+						random_array[i*L + l][0] = i;
+						random_array[i*L + l][1] = l;
 					}
-					return false;
-				};
+				}
 
-				if (search_neighbours())
+				std::shuffle(&random_array[0], &random_array[N*L - 1], std::mt19937(std::random_device()()));
+
+				for (unsigned i = 0; i < N*L; ++i)
+				{
+					auto neighbor = random_solution;
+					neighbor.coordinates[random_array[i][0]][random_array[i][1]].flip();
+
+					//Safety check for bit modification
+					Converter c;
+					c.ul = neighbor.coordinates[i].to_ulong();
+					if (isinf<float>(c.f) || isnan<float>(c.f))
+						continue;
+
+					auto neighbor_minimum = problem.functor(neighbor.coordinates);
+
+					if (neighbor_minimum < neighbor_best_minimum)
+					{
+						neighbor_best = neighbor;
+						neighbor_best_minimum = neighbor_minimum;
+						found_min = true;
+						break;
+					}
+				}
+				
+				if (found_min)
 				{
 					random_solution = neighbor_best;
 					current_minimum = neighbor_best_minimum;
@@ -144,6 +215,9 @@ namespace AGE1
 				{
 					local = true;
 				}
+
+				if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start).count() > 300)
+					break;
 
 			} while (!local);
 
@@ -154,12 +228,11 @@ namespace AGE1
 			}
 
 			Temperature += 1;
-		} while (Temperature < T_MAX);
+		} while (Temperature < T_MAX && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() < 2 * N);
 
 
 		return ReturnWrapper<N>{best_solution, best_minimum};
 	}
-
 
 	template<unsigned N>
 	ReturnWrapper<N> simulated_annealing(Problem<N>& problem)
@@ -180,7 +253,7 @@ namespace AGE1
 
 			//Halting condition
 			bool local = false;
-			unsigned repeats = 0;
+			int repeats = 0;
 			const unsigned MAX_REPEATS = 30;
 			float last_minimum = -1;
 			const auto halt_time = std::chrono::system_clock::now();
@@ -202,6 +275,15 @@ namespace AGE1
 
 				auto neighbor = random_solution;
 				neighbor.coordinates[n_location][l_location].flip();
+
+				//Safety check for bit modification
+				Converter c;
+				c.ul = neighbor.coordinates[n_location].to_ulong();
+				if (isinf<float>(c.f) || isnan<float>(c.f))
+				{
+					repeats -= 1;
+					continue;
+				}
 
 				auto neighbor_minimum = problem.functor(neighbor.coordinates);
 
@@ -226,8 +308,83 @@ namespace AGE1
 			}
 
 			Temperature *= 0.9;
-		} while (Temperature > 0.001 && std::chrono::duration_cast<std::chrono::minutes>(std::chrono::system_clock::now() - term_time).count() < 2);//Terminating cond
+		} while (Temperature > 0.001 && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - term_time).count() < 3);//Terminating cond
 
 		return ReturnWrapper<N>{best_solution, best_minimum};
 	}
+
+	template<unsigned N>
+	struct HeuristicRunWrapper
+	{
+		float coordinates[30][N];
+		float func_values[30];
+		unsigned deltas[30];
+	};
+
+	template<template <unsigned> class Function>
+	struct AlgorythmAnalyzerAGE1
+	{
+		Function<2> instance;
+		
+		std::string create_output()
+		{
+			auto j = create_json();
+			return std::string(j.dump());
+		}
+
+		nlohmann::json create_json()
+		{
+			REGISTER_DIMENSION(2);
+			REGISTER_DIMENSION(5);
+			REGISTER_DIMENSION(30);
+			
+			//HC - best
+			printf("Started HC-Best on %s\n", instance.name.c_str());
+			REGISTER_FUNCTION(hillclimb_best_improve, 2);
+			REGISTER_FUNCTION(hillclimb_best_improve, 5);
+			REGISTER_FUNCTION(hillclimb_best_improve, 30);
+			printf("Ended HC-Best on %s\n", instance.name.c_str());
+
+			//HC - first
+			printf("Started HC - first on %s\n", instance.name.c_str());
+			REGISTER_FUNCTION(hillclimb_first_improve, 2);
+			REGISTER_FUNCTION(hillclimb_first_improve, 5);
+			REGISTER_FUNCTION(hillclimb_first_improve, 30);
+			printf("Ended HC - first on %s\n", instance.name.c_str());
+
+			printf("Started SA on %s\n", instance.name.c_str());
+			REGISTER_FUNCTION(simulated_annealing, 2);
+			REGISTER_FUNCTION(simulated_annealing, 5);
+			REGISTER_FUNCTION(simulated_annealing, 30);
+			printf("Ended SA on %s\n", instance.name.c_str());
+
+			nlohmann::json j = {
+				{"function-name", instance.name.c_str()},
+				{"global_minimum", std::to_string(instance.global_minimum)},
+				{"analysis",	nlohmann::json::array({
+				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 2),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 5),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 30),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 2),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 5),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 30),
+				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 2),
+				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 5),
+				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 30),
+				})
+			} };
+
+			return j;
+		}
+
+		void create_output_file()
+		{
+			auto j = create_json();
+			std::string name("output_");
+			name += instance.name.c_str();
+			name += ".json";
+			std::ofstream out(name.c_str());
+			out << j << std::endl;
+		}
+	};
 }

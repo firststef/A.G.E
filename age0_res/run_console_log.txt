@@ -1,0 +1,44 @@
+C:\Users\???\AppData\Local\Programs\Python\Python37-32\python.exe D:/facultate/anul_2/A.G.E/AGE.py
+================== A.G.E. script ==================
+### 2019 - Petrovici Stefan ###
+
+=== run on function rastrigin started ===
+=== run on function schwefel started ===
+=== run on function rosenbrock started ===
+=== run on function sphere started ===
+================== A.G.E. source ==================
+### 2019 - Petrovici Stefan ###
+Analyzer is running, please wait.
+The output file will be generated in this directory.
+Started D.A.G.O. on sphere
+Ended D.A.G.O. on sphere
+Started H.A.G.O. on sphere
+Ended H.A.G.O. on sphere
+=== run on function sphere ended ===
+================== A.G.E. source ==================
+### 2019 - Petrovici Stefan ###
+Analyzer is running, please wait.
+The output file will be generated in this directory.
+Started D.A.G.O. on rosenbrock
+Ended D.A.G.O. on rosenbrock
+Started H.A.G.O. on rosenbrock
+Ended H.A.G.O. on rosenbrock
+=== run on function rosenbrock ended ===
+================== A.G.E. source ==================
+### 2019 - Petrovici Stefan ###
+Analyzer is running, please wait.
+The output file will be generated in this directory.
+Started D.A.G.O. on rastrigin
+Ended D.A.G.O. on rastrigin
+Started H.A.G.O. on rastrigin
+Ended H.A.G.O. on rastrigin
+=== run on function rastrigin ended ===
+================== A.G.E. source ==================
+### 2019 - Petrovici Stefan ###
+Analyzer is running, please wait.
+The output file will be generated in this directory.
+Started D.A.G.O. on schwefel
+Ended D.A.G.O. on schwefel
+Started H.A.G.O. on schwefel
+Ended H.A.G.O. on schwefel
+=== run on function schwefel ended ===
