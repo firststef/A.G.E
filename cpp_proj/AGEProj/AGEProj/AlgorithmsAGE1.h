@@ -64,9 +64,8 @@ namespace AGE1
 			Converter c;
 			c.f = std::numeric_limits<float>::infinity();
 			
-			std::uint32_t r = std::numeric_limits<float>::infinity();
+			std::uint32_t r = std::numeric_limits<unsigned>::infinity();
 
-			c.ul = r;
 			while (isnan<float>(c.f) || isinf<float>(c.f))
 			{
 				unsigned random[3] = { rand(), rand(), rand() };

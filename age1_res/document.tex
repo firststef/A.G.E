@@ -10,7 +10,7 @@
 \definecolor{codegray}{gray}{0.9}
 \newcommand{\code}[1]{\colorbox{codegray}{\texttt{#1}}}
 
-\title{AG Tema 0}
+\title{AG Tema 1}
 \author{Stefan Petrovici}
 \date{October 2019}
 
@@ -100,7 +100,7 @@ The Simulated Annealing Algorithm picks a random neighbor, tests if he is better
 In this method we will choose the \textbf{bitstring} representation of real floating numbers. Float type values have 4 bytes, consisting of a sign bit, an 8-bit excess-127 binary exponent, and a 23-bit mantissa. By modifying one bit of the value we can change the sign of the number, the mantissa or the exponent.
 Float has a 7-digit precision, and by using a formula for binding this representation to the domain interval we make sure we can check as many valid candidates as possible.
 $$ X_r_e_a_l = a+decimal(x_b_i_t_i)*(b-a)/(2^n-1)$$
-The data structure we are going to use is a standard library std::bitset<T>. This structure is useful because it places each bit in an actual physical bit and also that it is allocated on stack, meaning it will be faster to access than other options like std::vector<bool> or std::vector<int>.
+The data structure we are going to use is a standard library std::bitset. This structure is useful because it places each bit in an actual physical bit and also that it is allocated on stack, meaning it will be faster to access than other options like std::vector.
 
 \section{Experiment}
 
