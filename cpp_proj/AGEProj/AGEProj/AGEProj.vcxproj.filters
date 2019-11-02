@@ -38,5 +38,11 @@
     <ClInclude Include="AlgorithmsAGE1.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="AlgorithmsAGE1p.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionsAGE1p.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

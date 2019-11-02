@@ -237,3 +237,4 @@ cpp_proj/AGEProj/AGEProj/Debug
 cpp_proj/AGEProj/AGEProj/Release
 cpp_proj/AGEProj/Debug
 cpp_proj/AGEProj/Release
+*.user

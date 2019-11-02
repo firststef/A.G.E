@@ -5,8 +5,12 @@
 #include <chrono>
 #include <random>
 
+#ifndef CONCAT3
 #define CONCAT3(x, y, z) x##y##z
+#endif
+#ifndef CONCAT4
 #define CONCAT4(x, y, z, w) x##y##z##w
+#endif
 
 #define REGISTER_DIMENSION(N)\
 Function<N> CONCAT3(f, _dim_, N); \
