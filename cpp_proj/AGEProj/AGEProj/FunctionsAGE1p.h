@@ -3,15 +3,15 @@
 #include "AGE.h"
 #include <bitset>
 #include <string>
-#include <math.h>
 #include <cmath>
 
 namespace AGE1p
 {
-	template<unsigned Ex, unsigned Man>
+	template<bool Sgn, unsigned Ex, unsigned Man>
 	struct fixed_point_number
 	{
-		std::bitset<Ex + Man> value;
+		static_assert(Sgn + Ex + Man > 0, "At least one bit is required");
+		std::bitset<Sgn + Ex + Man> value;
 
 		float to_float() const
 		{
@@ -19,12 +19,14 @@ namespace AGE1p
 			
 			for (int i=1; i<=Ex; ++i)
 			{
-				number += value[Ex - i] * pow(2, i-1);
+				number += value[Sgn + Ex - i] * pow(2, i-1);
 			}
 			for (int i=0; i<Man; ++i)
 			{
-				number += value[Ex + i] * pow(2, -i);//de verificat daca merge
+				number += value[Sgn + Ex + i] * pow(2, -i);//de verificat daca merge
 			}
+			if (Sgn)
+				number = -number;
 
 			return number;
 		}
@@ -35,26 +37,22 @@ namespace AGE1p
 		const float right;
 	};
 
-	template<unsigned Ex, unsigned Man, unsigned N>
+	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N>
 	struct NDimensionPoint
 	{
-		fixed_point_number<Ex,Man> coordinates[N];
-	};
-
-	template<unsigned Ex, unsigned Man, unsigned N>
-	struct ReturnWrapper
-	{
-		NDimensionPoint<Ex, Man, N> point;
-		float func_value;
+		static_assert(Sgn + Ex + Man > 0, "At least one bit is required");
+		static_assert(N > 0, "At least one dimension is required");
+		fixed_point_number<Sgn,Ex,Man> coordinates[N];
 	};
 
 	constexpr float bitstring_to_interval(float left, float right, std::uint32_t number)
 	{
 		return left + float((double(number)) / double(two_at_32_m_1) * double(right - left));
-	}
+	}//TODO: valorile nu sunt din interval
 
 	template<unsigned N>
 	struct PerfTestFunction {
+		static_assert(N > 0, "At least one dimension is required");
 		const std::string name;
 
 		const Interval search_domain;

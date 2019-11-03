@@ -184,6 +184,27 @@ def main(argv):
                             prettified_strings.append(str(val))
                     print(' & '.join([val for val in prettified_strings]), end=' \\\\\n')
 
+            if arg == 'age1p':
+                with open('output_trace_hc.json', 'r') as f:
+                    data = json.load(f)
+
+                    candidate_tree = dict()
+                    for key, value in data["candidates"].items():
+                        candidate_tree[key] = dict()
+
+                        if not value["best_neighbor_coordinates_string"]:
+                            continue
+
+                        for search_key, search_value in data["candidates"].items():
+                            if ''.join(value["coordinates_string"]) == ''.join(search_value["coordinates_string"]):
+                                if search_key in data["candidates"].items():
+                                    candidate_tree[key][search_key] = candidate_tree[search_key]
+                                    del candidate_tree[search_key]
+                                candidate_tree[key][search_key] = dict()
+
+                    x = 0
+
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])

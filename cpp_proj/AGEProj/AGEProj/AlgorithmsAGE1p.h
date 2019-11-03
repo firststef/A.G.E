@@ -3,7 +3,6 @@
 #include "json.hpp"
 #include <ctime>
 #include <chrono>
-#include <random>
 
 #define TRACE_MODE
 
@@ -19,13 +18,13 @@ Function<N> CONCAT3(f, _dim_, N); \
 PerfTestFunctor<N> CONCAT3(f, _perf_dim_, N) = {CONCAT3(f, _dim_, N)};\
 MaximizationProblem<N> CONCAT3(problem, _dim_, N) ( CONCAT3(f, _perf_dim_, N)); \
 
-#define REGISTER_FUNCTION_P(function, Ex, Man, N)\
+#define REGISTER_FUNCTION_P(function, Sgn, Ex, Man, N)\
 HeuristicRunWrapper<N> CONCAT4(run_,function,_,N);\
 for (unsigned repeat = 0; repeat < 30; ++repeat)\
 {\
 	auto begin = std::chrono::system_clock::now();\
 \
-	const auto res = function<Ex, Man, N>(CONCAT3(problem,_dim_,N));\
+	const auto res = function<Sgn, Ex, Man, N>(CONCAT3(problem,_dim_,N));\
 	CONCAT4(run_,function,_,N).func_values[repeat] = res.func_value;\
 	for (unsigned i = 0; i < 2; ++i)\
 	{\
@@ -94,10 +93,22 @@ namespace AGE1p
 		}
 	};
 
-	template<unsigned Ex, unsigned Man, unsigned N>
-	NDimensionPoint<Ex, Man, N> get_random_point()
+	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N>
+	struct ReturnWrapper
 	{
-		NDimensionPoint<Ex, Man, N> point;
+		static_assert(Sgn + Ex + Man > 0, "At least one bit is required");
+		static_assert(N > 0, "At least one dimension is required");
+		NDimensionPoint<Sgn, Ex, Man, N> point;
+		float func_value;
+#ifdef TRACE_MODE
+		nlohmann::json ret_json;
+#endif
+	};
+
+	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N>
+	NDimensionPoint<Sgn, Ex, Man, N> get_random_point()
+	{
+		NDimensionPoint<Sgn, Ex, Man, N> point;
 		srand(std::chrono::system_clock::now().time_since_epoch().count());
 
 		for (unsigned i = 0; i < N; ++i)
@@ -111,20 +122,25 @@ namespace AGE1p
 		return point;
 	}
 
-	template<unsigned Ex, unsigned Man, unsigned N>
-	ReturnWrapper<Ex, Man, N> hillclimb_best_improve(Problem<N>& problem)
+	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N>
+	ReturnWrapper<Sgn, Ex, Man, N> hillclimb_best_improve(Problem<N>& problem)
 	{
-		NDimensionPoint<Ex, Man, N> best_solution;
+		NDimensionPoint<Sgn, Ex, Man, N> best_solution;
 		auto best_value = problem.starting_value;
 
 		const unsigned T_MAX = 30;
 		unsigned Temperature = 0;
 		const auto start = std::chrono::system_clock::now();
 
+#ifdef TRACE_MODE
+		unsigned id = 0;
+		nlohmann::json j;
+#endif
+
 		do
 		{
 			bool local = false;
-			auto random_solution = get_random_point<Ex, Man, N>();
+			auto random_solution = get_random_point<Sgn, Ex, Man, N>();
 
 			float coordinates_r[N];
 			for (unsigned x = 0; x < N; ++x)
@@ -140,22 +156,36 @@ namespace AGE1p
 				printf(" %s:%f ", random_solution.coordinates[x].value.to_string().c_str(), coordinates_r[x]);
 			}
 			printf(" Value at %f\n", current_best_value);
-
-			int count = 0;
+			unsigned indent = 0;
 #endif
 
 			do
 			{
-				NDimensionPoint<Ex, Man, N> neighbor_best;
+				NDimensionPoint<Sgn, Ex, Man, N> neighbor_best;
 				float neighbor_best_value = problem.starting_value;
 
 #ifdef TRACE_MODE
-				count++;
+				indent++;
+				id++;
+				for (unsigned x = 0; x < N; ++x)
+				{
+					coordinates_r[x] = random_solution.coordinates[x].to_float();
+				}
+				std::string coord_str[N];
+				for (unsigned x = 0; x < N; ++x)
+				{
+					coord_str[x] = random_solution.coordinates[x].value.to_string();
+				}
+				j["candidates"][std::to_string(id)] = {
+						{"coordinates_float", *reinterpret_cast<std::array<float, N>*>(&coordinates_r)},
+						{"coordinates_string", *reinterpret_cast<std::array<std::string, N>*>(&coord_str)},
+						{"value", current_best_value}
+				}; 
 #endif
 
 				for (unsigned i = 0; i < N; ++i)
 				{
-					for (unsigned l = 0; l < Ex + Man; ++l)
+					for (unsigned l = 0; l < Sgn + Ex + Man; ++l)
 					{
 						auto neighbor = random_solution;
 						neighbor.coordinates[i].value[l].flip();
@@ -169,11 +199,10 @@ namespace AGE1p
 						auto neighbor_value = problem.functor(coordinates);
 
 #ifdef TRACE_MODE
-						for (int tab=0;tab<count;++tab)
+						for (unsigned tab=0;tab<indent;++tab)
 						{
 							printf("\t");
 						}
-						
 						printf("Neighbor solution:");
 						for (unsigned x = 0; x < N; ++x)
 						{
@@ -205,12 +234,29 @@ namespace AGE1p
 				{
 					coordinates_r[x] = random_solution.coordinates[x].to_float();
 				}
+				for (unsigned x = 0; x < N; ++x)
+				{
+					coord_str[x] = random_solution.coordinates[x].value.to_string();
+				}
 				printf(">>>Local value at %f", current_best_value);
 				for (unsigned x = 0; x < N; ++x)
 				{
 					printf(" %s:%f ", random_solution.coordinates[x].value.to_string().c_str(), coordinates_r[x]);
 				}
 				printf("\n");
+
+				if (!local) {
+					j["candidates"][std::to_string(id)]["best_neighbor_coordinates_float"] = *reinterpret_cast<std::array<float, N>*>(&coordinates_r);
+					j["candidates"][std::to_string(id)]["best_neighbor_coordinates_string"] = *reinterpret_cast<std::array<std::string, N>*>(&coord_str);
+					j["candidates"][std::to_string(id)]["best_neighbor_value"] = current_best_value;
+				}
+				else
+				{
+					j["candidates"][std::to_string(id)]["best_neighbor_coordinates_float"] = nlohmann::json::array();
+					j["candidates"][std::to_string(id)]["best_neighbor_coordinates_string"] = nlohmann::json::array();
+					j["candidates"][std::to_string(id)]["best_neighbor_value"] = current_best_value;
+				}
+
 #endif
 
 			} while (!local);
@@ -235,16 +281,20 @@ namespace AGE1p
 		{
 			printf(" %s:%f \n\n", best_solution.coordinates[x].value.to_string().c_str(), coordinates_r[x]);
 		}
+		j["best_candidate"] = std::to_string(id);
 #endif
 
-
-		return ReturnWrapper<Ex, Man, N>{best_solution, best_value};
+#ifndef TRACE_MODE
+		return ReturnWrapper<Sgn, Ex, Man, N>{best_solution, best_value};
+#else
+		return ReturnWrapper<Sgn, Ex, Man, N>{best_solution, best_value, j};
+#endif
 	}
 
-	template<unsigned Ex, unsigned Man, unsigned N>
-	ReturnWrapper<Ex, Man, N> hillclimb_first_improve(Problem<N>& problem)
+	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N>
+	ReturnWrapper<Sgn, Ex, Man, N> hillclimb_first_improve(Problem<N>& problem)
 	{
-		NDimensionPoint<Ex, Man, N> best_solution;
+		NDimensionPoint<Sgn, Ex, Man, N> best_solution;
 		auto best_minimum = problem.starting_value;
 
 		const unsigned T_MAX = 30;
@@ -254,7 +304,7 @@ namespace AGE1p
 		do
 		{
 			bool local = false;
-			auto random_solution = get_random_point<Ex, Man, N>();
+			auto random_solution = get_random_point<Sgn, Ex, Man, N>();
 
 			float coordinates_r[N];
 			for (unsigned x = 0; x < N; ++x)
@@ -265,45 +315,36 @@ namespace AGE1p
 
 			do
 			{
-				NDimensionPoint<Ex, Man, N> neighbor_best;
+				NDimensionPoint<Sgn, Ex, Man, N> neighbor_best;
 				float neighbor_best_minimum = problem.starting_value;
 
 				bool found_min = false;
-
-				unsigned random_array[N*(Ex + Man)][2];
 				for (unsigned i = 0; i < N; ++i)
 				{
-					for (unsigned l = 0; l < Ex + Man; ++l)
+					for (unsigned l = 0; l < Sgn + Ex + Man; ++l)
 					{
-						random_array[i*(Ex+ Man) + l][0] = i;
-						random_array[i*(Ex + Man) + l][1] = l;
+						auto neighbor = random_solution;
+						neighbor.coordinates[i].value[l].flip();
+
+						float coordinates[N];
+						for (unsigned x = 0; x < N; ++x)
+						{
+							coordinates[x] = neighbor.coordinates[x].to_float();
+						}
+
+						auto neighbor_minimum = problem.functor(coordinates);
+
+						if (problem.is_new_optimal(neighbor_best_minimum, neighbor_minimum))
+						{
+							neighbor_best = neighbor;
+							neighbor_best_minimum = neighbor_minimum;
+							found_min = true;
+							goto finished_neighbor;
+						}
 					}
 				}
 
-				std::shuffle(&random_array[0], &random_array[N*(Ex + Man) - 1], std::mt19937(std::random_device()()));
-
-				for (unsigned i = 0; i < N*(Ex + Man); ++i)
-				{
-					auto neighbor = random_solution;
-					neighbor.coordinates[random_array[i][0]].value[random_array[i][1]].flip();
-
-					float coordinates[N];
-					for (unsigned x = 0; x < N; ++x)
-					{
-						coordinates[x] = neighbor.coordinates[x].to_float();
-					}
-
-					auto neighbor_minimum = problem.functor(coordinates);
-
-					if (problem.is_new_optimal(neighbor_best_minimum, neighbor_minimum))
-					{
-						neighbor_best = neighbor;
-						neighbor_best_minimum = neighbor_minimum;
-						found_min = true;
-						break;
-					}
-				}
-
+				finished_neighbor:
 				if (found_min)
 				{
 					random_solution = neighbor_best;
@@ -329,15 +370,15 @@ namespace AGE1p
 		} while (Temperature < T_MAX && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() < 2 * N);
 
 
-		return ReturnWrapper<Ex, Man, N>{best_solution, best_minimum};
+		return ReturnWrapper<Sgn, Ex, Man, N>{best_solution, best_minimum};
 	}
 
-	template<unsigned Ex, unsigned Man, unsigned N>
-	ReturnWrapper<Ex, Man, N> simulated_annealing(Problem<N>& problem)
+	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N>
+	ReturnWrapper<Sgn, Ex, Man, N> simulated_annealing(Problem<N>& problem)
 	{
 		srand(time(nullptr));
 
-		NDimensionPoint<Ex, Man, N> best_solution;
+		NDimensionPoint<Sgn, Ex, Man, N> best_solution;
 		auto best_minimum = problem.starting_value;
 
 		double Temperature = 1;
@@ -346,7 +387,7 @@ namespace AGE1p
 		do
 		{
 			//Random init
-			auto random_solution = get_random_point<Ex,Man,N>();
+			auto random_solution = get_random_point<Sgn,Ex,Man,N>();
 
 			float coordinates_r[N];
 			for (unsigned x = 0; x < N; ++x)
@@ -375,7 +416,7 @@ namespace AGE1p
 
 				//Local init
 				auto n_location = rand() % N;
-				auto l_location = rand() % (Ex + Man);
+				auto l_location = rand() % (Sgn + Ex + Man);
 
 				auto neighbor = random_solution;
 				neighbor.coordinates[n_location].value[l_location].flip();
@@ -411,7 +452,7 @@ namespace AGE1p
 			Temperature *= 0.9;
 		} while (Temperature > 0.001 && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - term_time).count() < 3);//Terminating cond
 
-		return ReturnWrapper<Ex, Man, N>{best_solution, best_minimum};
+		return ReturnWrapper<Sgn, Ex, Man, N>{best_solution, best_minimum};
 	}
 
 	template<unsigned N>
@@ -441,16 +482,16 @@ namespace AGE1p
 
 			//HC - best
 			printf("Started HC-Best on %s\n", instance.name.c_str());
-			REGISTER_FUNCTION_P(hillclimb_best_improve, 5, 0, 2);
-			REGISTER_FUNCTION_P(hillclimb_best_improve, 5, 0, 5);
-			REGISTER_FUNCTION_P(hillclimb_best_improve, 5, 0, 30);
+			REGISTER_FUNCTION_P(hillclimb_best_improve, false, 5, 0, 2);
+			REGISTER_FUNCTION_P(hillclimb_best_improve, false, 5, 0, 5);
+			REGISTER_FUNCTION_P(hillclimb_best_improve, false, 5, 0, 30);
 			printf("Ended HC-Best on %s\n", instance.name.c_str());
 
 			//HC - first
 			printf("Started HC - first on %s\n", instance.name.c_str());
-			REGISTER_FUNCTION_P(hillclimb_first_improve, 5, 0, 2);
-			REGISTER_FUNCTION_P(hillclimb_first_improve, 5, 0, 5);
-			REGISTER_FUNCTION_P(hillclimb_first_improve, 5, 0, 30);
+			REGISTER_FUNCTION_P(hillclimb_first_improve, false, 5, 0, 2);
+			REGISTER_FUNCTION_P(hillclimb_first_improve, false, 5, 0, 5);
+			REGISTER_FUNCTION_P(hillclimb_first_improve, false, 5, 0, 30);
 			printf("Ended HC - first on %s\n", instance.name.c_str());
 
 			/*printf("Started SA on %s\n", instance.name.c_str());
@@ -482,7 +523,7 @@ namespace AGE1p
 		{
 			auto j = create_json();
 			std::string name("output_");
-			name += instance.name.c_str();
+			name += instance.name;
 			name += ".json";
 			std::ofstream out(name.c_str());
 			out << j << std::endl;
@@ -494,12 +535,18 @@ namespace AGE1p
 	{
 		void trace_hc()
 		{
+#ifndef TRACE_MODE
+			return;
+#else
 			Function<1> f_dim_1;
 			PerfTestFunctor<1> f_perf_dim_1 = { f_dim_1 };
 			MaximizationProblem<1> problem_dim_1 = f_perf_dim_1;
 			
-			ReturnWrapper<5, 0, 1> res = hillclimb_best_improve<5, 0, 1>(problem_dim_1);
-			int x = 0;
+			ReturnWrapper<false, 5, 0, 1> res = hillclimb_best_improve<false, 5, 0, 1>(problem_dim_1);
+			std::string name("output_trace_hc.json");
+			std::ofstream out(name.c_str());
+			out << res.ret_json << std::endl;
+#endif
 		}
 	};
 }

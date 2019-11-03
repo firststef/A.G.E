@@ -1,13 +1,7 @@
-cmake_minimum_required(VERSION 3.15)
 project(AGEProj)
 
-set(CMAKE_CXX_STANDARD 14)
+file(GLOB_RECURSIVE SRC_FILES *.cpp *.c)
 
-include_directories(AGEProj)
+add_executable(AGEProj ${SRC_FILES})
 
-add_executable(AGEProj
-        AGEProj/AGE.h
-        AGEProj/AlgorithmsAGE0.h
-        AGEProj/FunctionsAGE0.h
-        AGEProj/json.hpp
-        AGEProj/Source.cpp AGEProj/FunctionsAGE1.h AGEProj/AlgorithmsAGE1.h)
+install(TARGETS AGEProj DESTINATION "${COMPILE_ARCHITECTURE}/${COMPILE_CONFIGURATION}")
