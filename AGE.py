@@ -6,6 +6,9 @@ import json
 from json import encoder
 import numpy
 import datetime
+import sys
+
+sys.setrecursionlimit(100)
 
 project_root = './cpp_proj/AGEProj'
 executable_path = './cpp_proj/AGEProj/Release/'
@@ -190,19 +193,31 @@ def main(argv):
 
                     candidate_tree = dict()
                     for key, value in data["candidates"].items():
-                        candidate_tree[key] = dict()
 
-                        if not value["best_neighbor_coordinates_string"]:
-                            continue
+                        elem = ''.join(data["candidates"][key]["coordinates_string"])
 
-                        for search_key, search_value in data["candidates"].items():
-                            if ''.join(value["coordinates_string"]) == ''.join(search_value["coordinates_string"]):
-                                if search_key in data["candidates"].items():
-                                    candidate_tree[key][search_key] = candidate_tree[search_key]
-                                    del candidate_tree[search_key]
-                                candidate_tree[key][search_key] = dict()
+                        if elem not in candidate_tree:
+                            candidate_tree[elem] = dict()
 
-                    x = 0
+                        parent = ''.join(data["candidates"][key]["best_neighbor_coordinates_string"])
+
+                        if parent not in candidate_tree:
+                            candidate_tree[parent] = dict()
+
+                        if elem in candidate_tree[parent]:
+                            candidate_tree[parent][elem] = {**candidate_tree[elem], **candidate_tree[parent][elem]}
+                        else:
+                            candidate_tree[parent][elem] = candidate_tree[elem]
+
+                        del candidate_tree[elem]
+
+                    with open('candidate_tree.json', 'w') as j:
+                        json.dump(candidate_tree, j)
+
+                    def count_keys(dict_test):
+                        return sum(1+count_keys(v) if isinstance(v, dict) else 1 for k, v in dict_test.items())
+
+                    print(count_keys(candidate_tree))
 
 
 
