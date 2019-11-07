@@ -24,7 +24,7 @@ def generate_output_func(an_type: str, name: str):
     os.system('call AGEProj ' + an_type + ' ' + name)
     end = datetime.datetime.now()
     print('=== run on function ' + name + ' ended ===' + ' at ' + str(start))
-    print('total time on ' + name + ' is ' + str(end-start))
+    print('total time on ' + name + ' is ' + str(end - start))
 
 
 def main(argv):
@@ -100,7 +100,8 @@ def main(argv):
                                 'algorithm_type': 'deterministic',
                                 'dimension': analysis['dimension'],
                                 'result': analysis['deterministic_results']['result'],
-                                'run_time': analysis['deterministic_results']['runtime'] / 1000000 # converting to seconds
+                                'run_time': analysis['deterministic_results']['runtime'] / 1000000
+                                # converting to seconds
                             }
                             final_table.append(d_table_line)
 
@@ -113,8 +114,9 @@ def main(argv):
                                 'mean': numpy.mean(results),
                                 'max': numpy.max(results),
                                 'min': numpy.min(results),
-                                'median' : numpy.median(results),
-                                'mean_run_time': numpy.mean(analysis['heuristic_results']['deltas']) / 1000000, # converting to seconds
+                                'median': numpy.median(results),
+                                'mean_run_time': numpy.mean(analysis['heuristic_results']['deltas']) / 1000000,
+                                # converting to seconds
                                 'sd': numpy.std(results)
                             }
                             final_table.append(h_table_line)
@@ -126,6 +128,7 @@ def main(argv):
                     if val['algorithm_type'] == 'deterministic':
                         return 0
                     return 1
+
                 final_table = sorted(final_table, key=sort_type)
 
                 printed_head = False
@@ -136,7 +139,7 @@ def main(argv):
                         print()
 
                     prettified_strings = []
-                    for key, val in line.items():
+                    for cand, val in line.items():
                         if type(val) == float or type(val) == numpy.float64:
                             prettified_strings.append('{:.5f}'.format(val))
                         else:
@@ -163,7 +166,7 @@ def main(argv):
                                 'max': numpy.max(results),
                                 'min': numpy.min(results),
                                 'median': numpy.median(results),
-                                'mean_run_time': numpy.mean(analysis['deltas']) / 1000000, # converting to seconds
+                                'mean_run_time': numpy.mean(analysis['deltas']) / 1000000,  # converting to seconds
                                 'run_time': run_time / 60,
                                 'sd': numpy.std(results)
                             }
@@ -180,7 +183,7 @@ def main(argv):
                         print()
 
                     prettified_strings = []
-                    for key, val in line.items():
+                    for cand, val in line.items():
                         if type(val) == float or type(val) == numpy.float64:
                             prettified_strings.append('{:.5f}'.format(val))
                         else:
@@ -191,34 +194,38 @@ def main(argv):
                 with open('output_trace_hc.json', 'r') as f:
                     data = json.load(f)
 
-                    candidate_tree = dict()
-                    for key, value in data["candidates"].items():
+                    res_dict = dict()
 
-                        elem = ''.join(data["candidates"][key]["coordinates_string"])
+                    def add_to_dict(key):
+                        tr = dict()
+                        for neigh in candidates['improvements']:
+                            if key in [''.join(coord_s) for coord_s in candidates['improvements'][neigh]['next_neighbors_coordinates_string']]:
+                                new_key = ''.join(neigh)
+                                tr[new_key] = dict()
+                                tr[new_key]["children"] = add_to_dict(new_key)
+                                tr[new_key]["value"] = candidates['improvements'][neigh]['value']
+                        return tr
 
-                        if elem not in candidate_tree:
-                            candidate_tree[elem] = dict()
+                    for func, candidates in data.items():
 
-                        parent = ''.join(data["candidates"][key]["best_neighbor_coordinates_string"])
+                        candidate_tree = dict()
+                        for cand, value in candidates['improvements'].items():
+                            if not candidates['improvements'][cand]['next_neighbors_coordinates_string']:
+                                candidate_tree[cand] = dict()
+                                candidate_tree[cand]["children"] = add_to_dict(cand)
+                                candidate_tree[cand]["value"] = candidates['improvements'][cand]['value']
 
-                        if parent not in candidate_tree:
-                            candidate_tree[parent] = dict()
+                        res_dict[func] = candidate_tree
 
-                        if elem in candidate_tree[parent]:
-                            candidate_tree[parent][elem] = {**candidate_tree[elem], **candidate_tree[parent][elem]}
-                        else:
-                            candidate_tree[parent][elem] = candidate_tree[elem]
+                        print(candidate_tree)
 
-                        del candidate_tree[elem]
+                        def count_keys(dict_test):
+                            return sum(1 + count_keys(v) if isinstance(v, dict) else 1 for k, v in dict_test.items())
+
+                        print(count_keys(candidate_tree))
 
                     with open('candidate_tree.json', 'w') as j:
-                        json.dump(candidate_tree, j)
-
-                    def count_keys(dict_test):
-                        return sum(1+count_keys(v) if isinstance(v, dict) else 1 for k, v in dict_test.items())
-
-                    print(count_keys(candidate_tree))
-
+                        json.dump(res_dict, j)
 
 
 if __name__ == "__main__":

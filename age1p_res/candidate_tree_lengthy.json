@@ -1,0 +1,2008 @@
+{
+  "children": [{
+    "children": [{
+      "children": [],
+      "parent": "00001",
+      "name": "00000",
+      "value": 100.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "00111",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [],
+          "parent": "00111",
+          "name": "10111",
+          "value": 129.0
+        }],
+        "parent": "00011",
+        "name": "00111",
+        "value": 212.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "01011",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11011",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "01011",
+          "name": "11011",
+          "value": 343.0
+        }],
+        "parent": "00011",
+        "name": "01011",
+        "value": 516.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "10011",
+          "name": "10111",
+          "value": 129.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11011",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "10011",
+          "name": "11011",
+          "value": 343.0
+        }],
+        "parent": "00011",
+        "name": "10011",
+        "value": 725.0
+      }],
+      "parent": "00001",
+      "name": "00011",
+      "value": 964.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "00111",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [],
+          "parent": "00111",
+          "name": "10111",
+          "value": 129.0
+        }],
+        "parent": "00101",
+        "name": "00111",
+        "value": 212.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "01101",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11101",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "01101",
+          "name": "11101",
+          "value": 1227.0
+        }],
+        "parent": "00101",
+        "name": "01101",
+        "value": 1508.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "10101",
+          "name": "10111",
+          "value": 129.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11101",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "10101",
+          "name": "11101",
+          "value": 1227.0
+        }],
+        "parent": "00101",
+        "name": "10101",
+        "value": 1801.0
+      }],
+      "parent": "00001",
+      "name": "00101",
+      "value": 2100.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "01000",
+          "name": "00000",
+          "value": 100.0
+        }],
+        "parent": "01001",
+        "name": "01000",
+        "value": 1668.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "01011",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11011",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "01011",
+          "name": "11011",
+          "value": 343.0
+        }],
+        "parent": "01001",
+        "name": "01011",
+        "value": 516.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "01101",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11101",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "01101",
+          "name": "11101",
+          "value": 1227.0
+        }],
+        "parent": "01001",
+        "name": "01101",
+        "value": 1508.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "01000",
+              "name": "00000",
+              "value": 100.0
+            }],
+            "parent": "11000",
+            "name": "01000",
+            "value": 1668.0
+          }, {
+            "children": [{
+              "children": [],
+              "parent": "10000",
+              "name": "00000",
+              "value": 100.0
+            }],
+            "parent": "11000",
+            "name": "10000",
+            "value": 941.0
+          }],
+          "parent": "11001",
+          "name": "11000",
+          "value": 2287.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11011",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "11001",
+          "name": "11011",
+          "value": 343.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11101",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "11001",
+          "name": "11101",
+          "value": 1227.0
+        }],
+        "parent": "01001",
+        "name": "11001",
+        "value": 2399.0
+      }],
+      "parent": "00001",
+      "name": "01001",
+      "value": 2692.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "10000",
+          "name": "00000",
+          "value": 100.0
+        }],
+        "parent": "10001",
+        "name": "10000",
+        "value": 941.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "10011",
+          "name": "10111",
+          "value": 129.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11011",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "10011",
+          "name": "11011",
+          "value": 343.0
+        }],
+        "parent": "10001",
+        "name": "10011",
+        "value": 725.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "10101",
+          "name": "10111",
+          "value": 129.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11101",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "10101",
+          "name": "11101",
+          "value": 1227.0
+        }],
+        "parent": "10001",
+        "name": "10101",
+        "value": 1801.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "01000",
+              "name": "00000",
+              "value": 100.0
+            }],
+            "parent": "11000",
+            "name": "01000",
+            "value": 1668.0
+          }, {
+            "children": [{
+              "children": [],
+              "parent": "10000",
+              "name": "00000",
+              "value": 100.0
+            }],
+            "parent": "11000",
+            "name": "10000",
+            "value": 941.0
+          }],
+          "parent": "11001",
+          "name": "11000",
+          "value": 2287.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11011",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "11001",
+          "name": "11011",
+          "value": 343.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11101",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "11001",
+          "name": "11101",
+          "value": 1227.0
+        }],
+        "parent": "10001",
+        "name": "11001",
+        "value": 2399.0
+      }],
+      "parent": "00001",
+      "name": "10001",
+      "value": 2973.0
+    }],
+    "value": 3236.0,
+    "parent": "hillclimb_first_improve_tracer",
+    "name": "00001"
+  },
+  {
+    "children": [{
+      "children": [{
+        "children": [],
+        "parent": "00010",
+        "name": "00000",
+        "value": 100.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "00111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "00111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "00011",
+          "name": "00111",
+          "value": 212.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "01011",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11011",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "01011",
+            "name": "11011",
+            "value": 343.0
+          }],
+          "parent": "00011",
+          "name": "01011",
+          "value": 516.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "10011",
+            "name": "10111",
+            "value": 129.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11011",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "10011",
+            "name": "11011",
+            "value": 343.0
+          }],
+          "parent": "00011",
+          "name": "10011",
+          "value": 725.0
+        }],
+        "parent": "00010",
+        "name": "00011",
+        "value": 964.0
+      }],
+      "parent": "00110",
+      "name": "00010",
+      "value": 3972.0
+    }, {
+      "children": [{
+        "children": [],
+        "parent": "00100",
+        "name": "00000",
+        "value": 100.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "00111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "00111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "00101",
+          "name": "00111",
+          "value": 212.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "01101",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11101",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "01101",
+            "name": "11101",
+            "value": 1227.0
+          }],
+          "parent": "00101",
+          "name": "01101",
+          "value": 1508.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "10101",
+            "name": "10111",
+            "value": 129.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11101",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "10101",
+            "name": "11101",
+            "value": 1227.0
+          }],
+          "parent": "00101",
+          "name": "10101",
+          "value": 1801.0
+        }],
+        "parent": "00100",
+        "name": "00101",
+        "value": 2100.0
+      }],
+      "parent": "00110",
+      "name": "00100",
+      "value": 2804.0
+    }, {
+      "children": [{
+        "children": [],
+        "parent": "00111",
+        "name": "01111",
+        "value": 100.0
+      }, {
+        "children": [],
+        "parent": "00111",
+        "name": "10111",
+        "value": 129.0
+      }],
+      "parent": "00110",
+      "name": "00111",
+      "value": 212.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "00100",
+            "name": "00000",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "00111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "00111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "00101",
+              "name": "00111",
+              "value": 212.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "01101",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11101",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "01101",
+                "name": "11101",
+                "value": 1227.0
+              }],
+              "parent": "00101",
+              "name": "01101",
+              "value": 1508.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "10101",
+                "name": "10111",
+                "value": 129.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11101",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "10101",
+                "name": "11101",
+                "value": 1227.0
+              }],
+              "parent": "00101",
+              "name": "10101",
+              "value": 1801.0
+            }],
+            "parent": "00100",
+            "name": "00101",
+            "value": 2100.0
+          }],
+          "parent": "01100",
+          "name": "00100",
+          "value": 2804.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "01000",
+            "name": "00000",
+            "value": 100.0
+          }],
+          "parent": "01100",
+          "name": "01000",
+          "value": 1668.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "01101",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11101",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "01101",
+            "name": "11101",
+            "value": 1227.0
+          }],
+          "parent": "01100",
+          "name": "01101",
+          "value": 1508.0
+        }],
+        "parent": "01110",
+        "name": "01100",
+        "value": 3556.0
+      }, {
+        "children": [],
+        "parent": "01110",
+        "name": "01111",
+        "value": 100.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "11111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "11111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "11110",
+          "name": "11111",
+          "value": 131.0
+        }],
+        "parent": "01110",
+        "name": "11110",
+        "value": 3475.0
+      }],
+      "parent": "00110",
+      "name": "01110",
+      "value": 3684.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "00100",
+            "name": "00000",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "00111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "00111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "00101",
+              "name": "00111",
+              "value": 212.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "01101",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11101",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "01101",
+                "name": "11101",
+                "value": 1227.0
+              }],
+              "parent": "00101",
+              "name": "01101",
+              "value": 1508.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "10101",
+                "name": "10111",
+                "value": 129.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11101",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "10101",
+                "name": "11101",
+                "value": 1227.0
+              }],
+              "parent": "00101",
+              "name": "10101",
+              "value": 1801.0
+            }],
+            "parent": "00100",
+            "name": "00101",
+            "value": 2100.0
+          }],
+          "parent": "10100",
+          "name": "00100",
+          "value": 2804.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "10000",
+            "name": "00000",
+            "value": 100.0
+          }],
+          "parent": "10100",
+          "name": "10000",
+          "value": 941.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "10101",
+            "name": "10111",
+            "value": 129.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11101",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "10101",
+            "name": "11101",
+            "value": 1227.0
+          }],
+          "parent": "10100",
+          "name": "10101",
+          "value": 1801.0
+        }],
+        "parent": "10110",
+        "name": "10100",
+        "value": 3225.0
+      }, {
+        "children": [],
+        "parent": "10110",
+        "name": "10111",
+        "value": 129.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "11111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "11111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "11110",
+          "name": "11111",
+          "value": 131.0
+        }],
+        "parent": "10110",
+        "name": "11110",
+        "value": 3475.0
+      }],
+      "parent": "00110",
+      "name": "10110",
+      "value": 3857.0
+    }],
+    "value": 3988.0,
+    "parent": "hillclimb_first_improve_tracer",
+    "name": "00110"
+  }, 
+  {
+    "children": [{
+      "children": [{
+        "children": [],
+        "parent": "00010",
+        "name": "00000",
+        "value": 100.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "00111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "00111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "00011",
+          "name": "00111",
+          "value": 212.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "01011",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11011",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "01011",
+            "name": "11011",
+            "value": 343.0
+          }],
+          "parent": "00011",
+          "name": "01011",
+          "value": 516.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "10011",
+            "name": "10111",
+            "value": 129.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11011",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "10011",
+            "name": "11011",
+            "value": 343.0
+          }],
+          "parent": "00011",
+          "name": "10011",
+          "value": 725.0
+        }],
+        "parent": "00010",
+        "name": "00011",
+        "value": 964.0
+      }],
+      "parent": "01010",
+      "name": "00010",
+      "value": 3972.0
+    }, {
+      "children": [{
+        "children": [],
+        "parent": "01000",
+        "name": "00000",
+        "value": 100.0
+      }],
+      "parent": "01010",
+      "name": "01000",
+      "value": 1668.0
+    }, {
+      "children": [{
+        "children": [],
+        "parent": "01011",
+        "name": "01111",
+        "value": 100.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "11111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "11111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "11011",
+          "name": "11111",
+          "value": 131.0
+        }],
+        "parent": "01011",
+        "name": "11011",
+        "value": 343.0
+      }],
+      "parent": "01010",
+      "name": "01011",
+      "value": 516.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "00100",
+            "name": "00000",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "00111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "00111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "00101",
+              "name": "00111",
+              "value": 212.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "01101",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11101",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "01101",
+                "name": "11101",
+                "value": 1227.0
+              }],
+              "parent": "00101",
+              "name": "01101",
+              "value": 1508.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "10101",
+                "name": "10111",
+                "value": 129.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11101",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "10101",
+                "name": "11101",
+                "value": 1227.0
+              }],
+              "parent": "00101",
+              "name": "10101",
+              "value": 1801.0
+            }],
+            "parent": "00100",
+            "name": "00101",
+            "value": 2100.0
+          }],
+          "parent": "01100",
+          "name": "00100",
+          "value": 2804.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "01000",
+            "name": "00000",
+            "value": 100.0
+          }],
+          "parent": "01100",
+          "name": "01000",
+          "value": 1668.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "01101",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11101",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "01101",
+            "name": "11101",
+            "value": 1227.0
+          }],
+          "parent": "01100",
+          "name": "01101",
+          "value": 1508.0
+        }],
+        "parent": "01110",
+        "name": "01100",
+        "value": 3556.0
+      }, {
+        "children": [],
+        "parent": "01110",
+        "name": "01111",
+        "value": 100.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "11111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "11111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "11110",
+          "name": "11111",
+          "value": 131.0
+        }],
+        "parent": "01110",
+        "name": "11110",
+        "value": 3475.0
+      }],
+      "parent": "01010",
+      "name": "01110",
+      "value": 3684.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "00010",
+            "name": "00000",
+            "value": 100.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "00111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "00111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "00011",
+              "name": "00111",
+              "value": 212.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "01011",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11011",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "01011",
+                "name": "11011",
+                "value": 343.0
+              }],
+              "parent": "00011",
+              "name": "01011",
+              "value": 516.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "10011",
+                "name": "10111",
+                "value": 129.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11011",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "10011",
+                "name": "11011",
+                "value": 343.0
+              }],
+              "parent": "00011",
+              "name": "10011",
+              "value": 725.0
+            }],
+            "parent": "00010",
+            "name": "00011",
+            "value": 964.0
+          }],
+          "parent": "10010",
+          "name": "00010",
+          "value": 3972.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "10000",
+            "name": "00000",
+            "value": 100.0
+          }],
+          "parent": "10010",
+          "name": "10000",
+          "value": 941.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "10011",
+            "name": "10111",
+            "value": 129.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11011",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "10011",
+            "name": "11011",
+            "value": 343.0
+          }],
+          "parent": "10010",
+          "name": "10011",
+          "value": 725.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "00100",
+                "name": "00000",
+                "value": 100.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "00111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "00111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "00101",
+                  "name": "00111",
+                  "value": 212.0
+                }, {
+                  "children": [{
+                    "children": [],
+                    "parent": "01101",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [{
+                      "children": [{
+                        "children": [],
+                        "parent": "11111",
+                        "name": "01111",
+                        "value": 100.0
+                      }, {
+                        "children": [],
+                        "parent": "11111",
+                        "name": "10111",
+                        "value": 129.0
+                      }],
+                      "parent": "11101",
+                      "name": "11111",
+                      "value": 131.0
+                    }],
+                    "parent": "01101",
+                    "name": "11101",
+                    "value": 1227.0
+                  }],
+                  "parent": "00101",
+                  "name": "01101",
+                  "value": 1508.0
+                }, {
+                  "children": [{
+                    "children": [],
+                    "parent": "10101",
+                    "name": "10111",
+                    "value": 129.0
+                  }, {
+                    "children": [{
+                      "children": [{
+                        "children": [],
+                        "parent": "11111",
+                        "name": "01111",
+                        "value": 100.0
+                      }, {
+                        "children": [],
+                        "parent": "11111",
+                        "name": "10111",
+                        "value": 129.0
+                      }],
+                      "parent": "11101",
+                      "name": "11111",
+                      "value": 131.0
+                    }],
+                    "parent": "10101",
+                    "name": "11101",
+                    "value": 1227.0
+                  }],
+                  "parent": "00101",
+                  "name": "10101",
+                  "value": 1801.0
+                }],
+                "parent": "00100",
+                "name": "00101",
+                "value": 2100.0
+              }],
+              "parent": "10100",
+              "name": "00100",
+              "value": 2804.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "10000",
+                "name": "00000",
+                "value": 100.0
+              }],
+              "parent": "10100",
+              "name": "10000",
+              "value": 941.0
+            }, {
+              "children": [{
+                "children": [],
+                "parent": "10101",
+                "name": "10111",
+                "value": 129.0
+              }, {
+                "children": [{
+                  "children": [{
+                    "children": [],
+                    "parent": "11111",
+                    "name": "01111",
+                    "value": 100.0
+                  }, {
+                    "children": [],
+                    "parent": "11111",
+                    "name": "10111",
+                    "value": 129.0
+                  }],
+                  "parent": "11101",
+                  "name": "11111",
+                  "value": 131.0
+                }],
+                "parent": "10101",
+                "name": "11101",
+                "value": 1227.0
+              }],
+              "parent": "10100",
+              "name": "10101",
+              "value": 1801.0
+            }],
+            "parent": "10110",
+            "name": "10100",
+            "value": 3225.0
+          }, {
+            "children": [],
+            "parent": "10110",
+            "name": "10111",
+            "value": 129.0
+          }, {
+            "children": [{
+              "children": [{
+                "children": [],
+                "parent": "11111",
+                "name": "01111",
+                "value": 100.0
+              }, {
+                "children": [],
+                "parent": "11111",
+                "name": "10111",
+                "value": 129.0
+              }],
+              "parent": "11110",
+              "name": "11111",
+              "value": 131.0
+            }],
+            "parent": "10110",
+            "name": "11110",
+            "value": 3475.0
+          }],
+          "parent": "10010",
+          "name": "10110",
+          "value": 3857.0
+        }],
+        "parent": "11010",
+        "name": "10010",
+        "value": 4069.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "01000",
+            "name": "00000",
+            "value": 100.0
+          }],
+          "parent": "11000",
+          "name": "01000",
+          "value": 1668.0
+        }, {
+          "children": [{
+            "children": [],
+            "parent": "10000",
+            "name": "00000",
+            "value": 100.0
+          }],
+          "parent": "11000",
+          "name": "10000",
+          "value": 941.0
+        }],
+        "parent": "11010",
+        "name": "11000",
+        "value": 2287.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "11111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "11111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "11011",
+          "name": "11111",
+          "value": 131.0
+        }],
+        "parent": "11010",
+        "name": "11011",
+        "value": 343.0
+      }, {
+        "children": [{
+          "children": [{
+            "children": [],
+            "parent": "11111",
+            "name": "01111",
+            "value": 100.0
+          }, {
+            "children": [],
+            "parent": "11111",
+            "name": "10111",
+            "value": 129.0
+          }],
+          "parent": "11110",
+          "name": "11111",
+          "value": 131.0
+        }],
+        "parent": "11010",
+        "name": "11110",
+        "value": 3475.0
+      }],
+      "parent": "01010",
+      "name": "11010",
+      "value": 4071.0
+    }],
+    "value": 4100.0,
+    "parent": "hillclimb_first_improve_tracer",
+    "name": "01010"
+  },
+  {
+    "children": [{
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "00100",
+          "name": "00000",
+          "value": 100.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "00111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "00111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "00101",
+            "name": "00111",
+            "value": 212.0
+          }, {
+            "children": [{
+              "children": [],
+              "parent": "01101",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [{
+                "children": [{
+                  "children": [],
+                  "parent": "11111",
+                  "name": "01111",
+                  "value": 100.0
+                }, {
+                  "children": [],
+                  "parent": "11111",
+                  "name": "10111",
+                  "value": 129.0
+                }],
+                "parent": "11101",
+                "name": "11111",
+                "value": 131.0
+              }],
+              "parent": "01101",
+              "name": "11101",
+              "value": 1227.0
+            }],
+            "parent": "00101",
+            "name": "01101",
+            "value": 1508.0
+          }, {
+            "children": [{
+              "children": [],
+              "parent": "10101",
+              "name": "10111",
+              "value": 129.0
+            }, {
+              "children": [{
+                "children": [{
+                  "children": [],
+                  "parent": "11111",
+                  "name": "01111",
+                  "value": 100.0
+                }, {
+                  "children": [],
+                  "parent": "11111",
+                  "name": "10111",
+                  "value": 129.0
+                }],
+                "parent": "11101",
+                "name": "11111",
+                "value": 131.0
+              }],
+              "parent": "10101",
+              "name": "11101",
+              "value": 1227.0
+            }],
+            "parent": "00101",
+            "name": "10101",
+            "value": 1801.0
+          }],
+          "parent": "00100",
+          "name": "00101",
+          "value": 2100.0
+        }],
+        "parent": "01100",
+        "name": "00100",
+        "value": 2804.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "01000",
+          "name": "00000",
+          "value": 100.0
+        }],
+        "parent": "01100",
+        "name": "01000",
+        "value": 1668.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "01101",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11101",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "01101",
+          "name": "11101",
+          "value": 1227.0
+        }],
+        "parent": "01100",
+        "name": "01101",
+        "value": 1508.0
+      }],
+      "parent": "11100",
+      "name": "01100",
+      "value": 3556.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "00100",
+          "name": "00000",
+          "value": 100.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "00111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "00111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "00101",
+            "name": "00111",
+            "value": 212.0
+          }, {
+            "children": [{
+              "children": [],
+              "parent": "01101",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [{
+                "children": [{
+                  "children": [],
+                  "parent": "11111",
+                  "name": "01111",
+                  "value": 100.0
+                }, {
+                  "children": [],
+                  "parent": "11111",
+                  "name": "10111",
+                  "value": 129.0
+                }],
+                "parent": "11101",
+                "name": "11111",
+                "value": 131.0
+              }],
+              "parent": "01101",
+              "name": "11101",
+              "value": 1227.0
+            }],
+            "parent": "00101",
+            "name": "01101",
+            "value": 1508.0
+          }, {
+            "children": [{
+              "children": [],
+              "parent": "10101",
+              "name": "10111",
+              "value": 129.0
+            }, {
+              "children": [{
+                "children": [{
+                  "children": [],
+                  "parent": "11111",
+                  "name": "01111",
+                  "value": 100.0
+                }, {
+                  "children": [],
+                  "parent": "11111",
+                  "name": "10111",
+                  "value": 129.0
+                }],
+                "parent": "11101",
+                "name": "11111",
+                "value": 131.0
+              }],
+              "parent": "10101",
+              "name": "11101",
+              "value": 1227.0
+            }],
+            "parent": "00101",
+            "name": "10101",
+            "value": 1801.0
+          }],
+          "parent": "00100",
+          "name": "00101",
+          "value": 2100.0
+        }],
+        "parent": "10100",
+        "name": "00100",
+        "value": 2804.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "10000",
+          "name": "00000",
+          "value": 100.0
+        }],
+        "parent": "10100",
+        "name": "10000",
+        "value": 941.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "10101",
+          "name": "10111",
+          "value": 129.0
+        }, {
+          "children": [{
+            "children": [{
+              "children": [],
+              "parent": "11111",
+              "name": "01111",
+              "value": 100.0
+            }, {
+              "children": [],
+              "parent": "11111",
+              "name": "10111",
+              "value": 129.0
+            }],
+            "parent": "11101",
+            "name": "11111",
+            "value": 131.0
+          }],
+          "parent": "10101",
+          "name": "11101",
+          "value": 1227.0
+        }],
+        "parent": "10100",
+        "name": "10101",
+        "value": 1801.0
+      }],
+      "parent": "11100",
+      "name": "10100",
+      "value": 3225.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "01000",
+          "name": "00000",
+          "value": 100.0
+        }],
+        "parent": "11000",
+        "name": "01000",
+        "value": 1668.0
+      }, {
+        "children": [{
+          "children": [],
+          "parent": "10000",
+          "name": "00000",
+          "value": 100.0
+        }],
+        "parent": "11000",
+        "name": "10000",
+        "value": 941.0
+      }],
+      "parent": "11100",
+      "name": "11000",
+      "value": 2287.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "11111",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [],
+          "parent": "11111",
+          "name": "10111",
+          "value": 129.0
+        }],
+        "parent": "11101",
+        "name": "11111",
+        "value": 131.0
+      }],
+      "parent": "11100",
+      "name": "11101",
+      "value": 1227.0
+    }, {
+      "children": [{
+        "children": [{
+          "children": [],
+          "parent": "11111",
+          "name": "01111",
+          "value": 100.0
+        }, {
+          "children": [],
+          "parent": "11111",
+          "name": "10111",
+          "value": 129.0
+        }],
+        "parent": "11110",
+        "name": "11111",
+        "value": 131.0
+      }],
+      "parent": "11100",
+      "name": "11110",
+      "value": 3475.0
+    }],
+    "value": 3803.0,
+    "parent": "hillclimb_first_improve_tracer",
+    "name": "11100"
+  }],
+  "name": "hillclimb_first_improve_tracer",
+  "parent": "null"
+}

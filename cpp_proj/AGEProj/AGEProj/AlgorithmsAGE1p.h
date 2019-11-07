@@ -439,7 +439,12 @@ namespace AGE1p
 		}
 	};
 
-	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N>
+	constexpr unsigned number_of_candidates(bool Sgn, unsigned Ex, unsigned Man, unsigned N)
+	{
+		return 1 << ((Sgn + Ex + Man)*N);
+	}
+
+	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N, unsigned ID>
 	void compute_all_candidates(NDimensionPoint <Sgn, Ex, Man, N> current, NDimensionPoint < Sgn, Ex, Man, N>* points, unsigned level)
 	{
 		static unsigned current_index = 0;
@@ -451,23 +456,23 @@ namespace AGE1p
 		else
 		{
 			current.coordinates[level / (Sgn + Ex + Man)].value[level % (Sgn + Ex + Man)] = 0;
-			compute_all_candidates<Sgn, Ex, Man, N>(current, points, level + 1);
+			compute_all_candidates<Sgn, Ex, Man, N, ID>(current, points, level + 1);
 			current.coordinates[level / (Sgn + Ex + Man)].value[level % (Sgn + Ex + Man)] = 1;
-			compute_all_candidates<Sgn, Ex, Man, N>(current, points, level + 1);
+			compute_all_candidates<Sgn, Ex, Man, N, ID>(current, points, level + 1);
 		}
 	}
 
 	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N, unsigned ID>
 	NDimensionPoint < Sgn, Ex, Man, N> get_next_candidate()
 	{
-		static NDimensionPoint < Sgn, Ex, Man, N> points[1<<(Sgn + Ex + Man)*N];
+		static NDimensionPoint < Sgn, Ex, Man, N> points[number_of_candidates(Sgn, Ex, Man, N)];
 
 		static unsigned current_p = 0;
 		
 		static bool initialized = false;
 		if (initialized)
 		{
-			if (current_p >= (1 << (Sgn + Ex + Man)*N))
+			if (current_p >= number_of_candidates(Sgn, Ex, Man, N))
 			{
 				return points[0];
 			}
@@ -478,7 +483,7 @@ namespace AGE1p
 		{
 			initialized = true;
 			NDimensionPoint < Sgn, Ex, Man, N> point;
-			compute_all_candidates(point, points, 0);
+			compute_all_candidates< Sgn, Ex, Man, N, ID>(point, points, 0);
 
 			return points[0];
 		}
@@ -489,7 +494,7 @@ namespace AGE1p
 	{
 		nlohmann::json j;
 
-		for (unsigned idx = 0; idx < (1 << (Sgn + Ex + Man)*N); ++idx)
+		for (unsigned idx = 0; idx < number_of_candidates(Sgn, Ex, Man, N); ++idx)
 		{
 			bool is_local = false;
 			auto root_candidate = get_next_candidate<Sgn, Ex, Man, N, 0>();
@@ -568,16 +573,103 @@ namespace AGE1p
 			};
 
 			if (!is_local) {
-				j["improvements"][root_name]["best_neighbor_coordinates_float"] = *reinterpret_cast<std::array<float, N>*>(&coordinates_bn_f);
-				j["improvements"][root_name]["best_neighbor_coordinates_string"] = *reinterpret_cast<std::array<std::string, N>*>(&coordinates_bn_s);
-				j["improvements"][root_name]["best_neighbor_value"] = neighbor_best_value;
+				j["improvements"][root_name]["next_neighbors_coordinates_float"] = *reinterpret_cast<std::array<std::array<float, N>, 1>*>(&coordinates_bn_f);
+				j["improvements"][root_name]["next_neighbors_coordinates_string"] = *reinterpret_cast<std::array<std::array<std::string, N>, 1>*>(&coordinates_bn_s);
+				j["improvements"][root_name]["next_neighbors_values"] = *reinterpret_cast<std::array<float, 1>*>(&neighbor_best_value);
 			}
 			else
 			{
-				j["improvements"][root_name]["best_neighbor_coordinates_float"] = nlohmann::json::array();
-				j["improvements"][root_name]["best_neighbor_coordinates_string"] = nlohmann::json::array();
-				j["improvements"][root_name]["best_neighbor_value"] = root_value;
+				j["improvements"][root_name]["next_neighbors_coordinates_float"] = nlohmann::json::array();
+				j["improvements"][root_name]["next_neighbors_coordinates_string"] = nlohmann::json::array();
+				j["improvements"][root_name]["next_neighbors_values"] = nlohmann::json::array();
 			}
+		}
+
+		return j;
+	}
+
+
+	template<bool Sgn, unsigned Ex, unsigned Man, unsigned N>
+	nlohmann::json hillclimb_first_improve_tracer(Problem<N>& problem)
+	{
+		nlohmann::json j;
+
+		for (unsigned idx = 0; idx < number_of_candidates(Sgn, Ex, Man, N); ++idx)
+		{
+			bool is_local = false;
+			auto root_candidate = get_next_candidate<Sgn, Ex, Man, N, 1>();
+
+			std::string coordinates_r_s[N];
+			for (unsigned x = 0; x < N; ++x)
+			{
+				coordinates_r_s[x] = root_candidate.coordinates[x].value.to_string();
+			}
+			float coordinates_r_f[N];
+			for (unsigned x = 0; x < N; ++x)
+			{
+				coordinates_r_f[x] = root_candidate.coordinates[x].to_float();
+			}
+			auto root_value = problem.functor(coordinates_r_f);
+
+			std::string root_name;
+			for (unsigned i = 0; i < N; ++i)
+			{
+				root_name += coordinates_r_s[i];
+			}
+
+			//Search for neighbors
+			float neighbor_next_values[number_of_candidates(Sgn, Ex, Man, N)];
+			float coordinates_n_f[number_of_candidates(Sgn, Ex, Man, N)][N];
+			std::string coordinates_n_s[number_of_candidates(Sgn, Ex, Man, N)][N];
+
+			unsigned improv_index = 0;
+			for (unsigned i = 0; i < N; ++i)
+			{
+				for (unsigned l = 0; l < Sgn + Ex + Man; ++l)
+				{
+					auto neighbor = root_candidate;
+					neighbor.coordinates[i].value[l].flip();
+
+					float coordinates[N];
+					for (unsigned x = 0; x < N; ++x)
+					{
+						coordinates[x] = neighbor.coordinates[x].to_float();
+					}
+
+					auto neighbor_value = problem.functor(coordinates);
+
+					if (problem.is_new_optimal(root_value, neighbor_value))
+					{
+						for (unsigned x = 0; x < N; ++x)
+						{
+							coordinates_n_f[improv_index][x] = neighbor.coordinates[x].to_float();
+						}
+
+						for (unsigned x = 0; x < N; ++x)
+						{
+							coordinates_n_s[improv_index][x] = neighbor.coordinates[x].value.to_string();
+						}
+
+						neighbor_next_values[improv_index] = neighbor_value;
+
+						improv_index++;
+					}
+				}
+			}
+
+			j["improvements"][root_name] = {
+				{"coordinates_float", *reinterpret_cast<std::array<float, N>*>(&coordinates_r_f)},
+				{"coordinates_string", *reinterpret_cast<std::array<std::string, N>*>(&coordinates_r_s)},
+				{"value", root_value}
+			};
+
+			std::vector<std::array<float, N>> conv_vector_bn_f(reinterpret_cast<std::array<float, N>*>(&coordinates_n_f), reinterpret_cast<std::array<float, N>*>(&coordinates_n_f) + improv_index);
+			std::vector<std::array<std::string, N>> conv_vector_bn_s(reinterpret_cast<std::array<std::string, N>*>(&coordinates_n_s), reinterpret_cast<std::array<std::string, N>*>(&coordinates_n_s) + improv_index);
+			std::vector<float> conv_vector_neigh_v(neighbor_next_values, neighbor_next_values + improv_index);
+			
+			j["improvements"][root_name]["next_neighbors_coordinates_float"] = conv_vector_bn_f;
+			j["improvements"][root_name]["next_neighbors_coordinates_string"] = conv_vector_bn_s;
+			j["improvements"][root_name]["next_neighbors_values"] = conv_vector_neigh_v;
 		}
 
 		return j;
@@ -592,10 +684,16 @@ namespace AGE1p
 			PerfTestFunctor<1> f_perf_dim_1 = { f_dim_1 };
 			MaximizationProblem<1> problem_dim_1 = f_perf_dim_1;
 			
-			nlohmann::json res = hillclimb_best_improve_tracer<false, 5, 0, 1>(problem_dim_1);
+			nlohmann::json res_hcb = hillclimb_best_improve_tracer<false, 5, 0, 1>(problem_dim_1);
+			nlohmann::json res_hcf = hillclimb_first_improve_tracer<false, 5, 0, 1>(problem_dim_1);
+
+			nlohmann::json j;
+			j["hillclimb_best_improve_tracer"] = res_hcb;
+			j["hillclimb_first_improve_tracer"] = res_hcf;
+
 			std::string name("output_trace_hc.json");
 			std::ofstream out(name.c_str());
-			out << res << std::endl;
+			out << j << std::endl;
 		}
 	};
 }
