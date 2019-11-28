@@ -69,7 +69,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Configuration)1\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -124,9 +126,12 @@
     <ClInclude Include="AlgorithmsAGE0.h" />
     <ClInclude Include="AlgorithmsAGE1.h" />
     <ClInclude Include="AlgorithmsAGE1p.h" />
+    <ClInclude Include="AlgorithmsAGE2.h" />
+    <ClInclude Include="constexpr_functions.h" />
     <ClInclude Include="FunctionsAGE0.h" />
     <ClInclude Include="FunctionsAGE1.h" />
     <ClInclude Include="FunctionsAGE1p.h" />
+    <ClInclude Include="FunctionsAGE2.h" />
     <ClInclude Include="json.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -15,6 +15,7 @@ executable_path = './cpp_proj/AGEProj/Release/'
 devenv_path = r'"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/"'
 supported_functions_age0 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
 supported_functions_age1 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
+supported_functions_age2 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
 
 
 def generate_output_func(an_type: str, name: str):
@@ -79,6 +80,12 @@ def main(argv):
                     t.start()
                     threads.append(t)
 
+            if arg == 'age2':
+                for func in supported_functions_age2:
+                    t = threading.Thread(target=generate_output_func, args=(arg, func,))
+                    t.start()
+                    threads.append(t)
+
             for t in threads:
                 t.join()
 
@@ -87,7 +94,7 @@ def main(argv):
             if arg == 'age0':
                 final_table = []
                 for func in supported_functions_age0:
-                    with open('output_' + func + '.json', 'r') as f:
+                    with open('output_age0_' + func + '.json', 'r') as f:
                         encoder.FLOAT_REPR = lambda o: format(o, '.5f')
                         numpy.set_printoptions(formatter={"float_kind": lambda x: "%g" % x})
                         numpy.set_printoptions(precision=6)
@@ -149,7 +156,7 @@ def main(argv):
             if arg == 'age1':
                 final_table = []
                 for func in supported_functions_age0:
-                    with open('output_' + func + '.json', 'r') as f:
+                    with open('output_age1_' + func + '.json', 'r') as f:
                         encoder.FLOAT_REPR = lambda o: format(o, '.5f')
                         numpy.set_printoptions(formatter={"float_kind": lambda x: "%g" % x})
                         numpy.set_printoptions(precision=6)
@@ -217,15 +224,56 @@ def main(argv):
 
                         res_dict[func] = candidate_tree
 
-                        print(candidate_tree)
-
-                        def count_keys(dict_test):
-                            return sum(1 + count_keys(v) if isinstance(v, dict) else 1 for k, v in dict_test.items())
-
-                        print(count_keys(candidate_tree))
+                        print('Json loaded.')
 
                     with open('candidate_tree.json', 'w') as j:
                         json.dump(res_dict, j)
+
+            if arg == 'age2':
+                final_table = []
+                for func in supported_functions_age0:
+                    with open('output_age2_' + func + '.json', 'r') as f:
+                        encoder.FLOAT_REPR = lambda o: format(o, '.5f')
+                        numpy.set_printoptions(formatter={"float_kind": lambda x: "%g" % x})
+                        numpy.set_printoptions(precision=6)
+                        data = json.load(f)
+
+                        for analysis in data['analysis']:
+                            if 'results' not in analysis:
+                                continue
+                            results = [float(n) for n in analysis['results']]
+                            run_time = sum(analysis['deltas']) / 1000000
+                            h_table_line = {
+                                'algorithm': analysis['algorythm-name'],
+                                'function_name': func,
+                                'dimension': analysis['dimension'],
+                                'mean': numpy.mean(results),
+                                'max': numpy.max(results),
+                                'min': numpy.min(results),
+                                'median': numpy.median(results),
+                                'mean_run_time': numpy.mean(analysis['deltas']) / 1000000,  # converting to seconds
+                                'run_time': run_time / 60,
+                                'sd': numpy.std(results)
+                            }
+                            final_table.append(h_table_line)
+
+                with open('final_result.json', 'w') as final:
+                    json.dump(final_table, final)
+
+                printed_head = False
+                for line in final_table:
+                    if not printed_head:
+                        print(' & '.join([key.capitalize() for key, val in line.items()]), end=' \\\\\n')
+                        printed_head = True
+                        print()
+
+                    prettified_strings = []
+                    for cand, val in line.items():
+                        if type(val) == float or type(val) == numpy.float64:
+                            prettified_strings.append('{:.5f}'.format(val))
+                        else:
+                            prettified_strings.append(str(val))
+                    print(' & '.join([val for val in prettified_strings]), end=' \\\\\n')
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 #include "AlgorithmsAGE0.h"
 #include "AlgorithmsAGE1.h"
 #include "AlgorithmsAGE1p.h"
+#include "AlgorithmsAGE2.h"
 
 int main(int argc, char** argv) {
 
@@ -71,6 +72,33 @@ int main(int argc, char** argv) {
 			printf("Function not supported\n");
 		}
 	}
+	else if (std::string(argv[1]) == std::string("age1t"))
+	{
+		if (std::string(argv[2]) == std::string("rastrigin"))
+		{
+			AGE1::AlgorythmAnalyzerAGE1<AGE1::Rastrigin> analyzer_rastr;
+			analyzer_rastr.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("schwefel"))
+		{
+			AGE1::AlgorythmAnalyzerAGE1<AGE1::Schwefel> analyzer_sch;
+			analyzer_sch.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("rosenbrock"))
+		{
+			AGE1::AlgorythmAnalyzerAGE1<AGE1::Rosenbrock> analyzer_rsn;
+			analyzer_rsn.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("sphere"))
+		{
+			AGE1::AlgorythmAnalyzerAGE1<AGE1::Sphere> analyzer_sph;
+			analyzer_sph.create_output_file();
+		}
+		else
+		{
+			printf("Function not supported\n");
+		}
+	}
 	else if (std::string(argv[1]) == std::string("age1p"))
 	{
 		AGE1p::GenericFunction<2> f_dim_2; AGE1p::GenericFunction<2> problem_dim_2({ f_dim_2 });
@@ -89,6 +117,35 @@ int main(int argc, char** argv) {
 		{
 			printf("Function not supported\n");
 		}
+	}
+	else if (std::string(argv[1]) == std::string("age2"))
+	{
+		if (std::string(argv[2]) == std::string("rastrigin"))
+		{
+			AGE2::AlgorythmAnalyzerAGE2<AGE2::Rastrigin> analyzer;
+			analyzer.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("schwefel"))
+		{
+			AGE2::AlgorythmAnalyzerAGE2<AGE2::Schwefel> analyzer;
+			analyzer.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("rosenbrock"))
+		{
+			AGE2::AlgorythmAnalyzerAGE2<AGE2::Rosenbrock> analyzer;
+			analyzer.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("sphere"))
+		{
+			AGE2::AlgorythmAnalyzerAGE2<AGE2::Sphere> analyzer;
+			analyzer.create_output_file();
+		}
+		else
+		{
+			printf("Function not supported\n");
+		}
+
+		system("pause");
 	}
 	else
 	{

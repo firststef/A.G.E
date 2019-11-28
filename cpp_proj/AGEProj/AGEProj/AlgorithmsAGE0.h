@@ -377,7 +377,7 @@ namespace AGE0 {
 		void create_output_file()
 		{
 			auto j = create_json();
-			std::string name("output_");
+			std::string name("output_age0_");
 			name += f1.name.c_str();
 			name += ".json";
 			std::ofstream out(name.c_str());

@@ -44,5 +44,14 @@
     <ClInclude Include="FunctionsAGE1p.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="AlgorithmsAGE2.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionsAGE2.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="constexpr_functions.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

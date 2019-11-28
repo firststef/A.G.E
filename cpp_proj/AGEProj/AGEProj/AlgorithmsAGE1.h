@@ -5,6 +5,9 @@
 #include <chrono>
 #include <random>
 
+#ifndef CONCAT2
+#define CONCAT2(x, y) x##y
+#endif
 #ifndef CONCAT3
 #define CONCAT3(x, y, z) x##y##z
 #endif
@@ -12,10 +15,12 @@
 #define CONCAT4(x, y, z, w) x##y##z##w
 #endif
 
+#undef REGISTER_DIMENSION
 #define REGISTER_DIMENSION(N)\
 Function<N> CONCAT3(f, _dim_, N); \
 Problem<N> CONCAT3(problem, _dim_, N) { {CONCAT3(f, _dim_, N)} }; \
 
+#undef REGISTER_FUNCTION
 #define REGISTER_FUNCTION(function, N)\
 HeuristicRunWrapper<N> CONCAT4(run_,function,_,N);\
 for (unsigned repeat = 0; repeat < 30; ++repeat)\
@@ -40,6 +45,7 @@ for (unsigned repeat = 0; repeat < 30; ++repeat)\
 	CONCAT4(stringified_run_,function,_,N)[repeat] = std::to_string(CONCAT4(run_,function,_,N).func_values[repeat]);\
 }
 
+#undef DUMP_ANALYSIS_TO_JSON
 #define DUMP_ANALYSIS_TO_JSON(function, N)\
 {\
 	{"algorythm-name",#function},\
@@ -48,6 +54,12 @@ for (unsigned repeat = 0; repeat < 30; ++repeat)\
 	{"deltas", CONCAT4(run_,function,_,N).deltas},\
 	{"coordinates", CONCAT4(run_,function,_,N).coordinates}\
 }\
+
+#define TRACE_ALGORITHM(algorithm, V)\
+std::vector<float> CONCAT4(run_evolution_,algorithm,_,V) = CONCAT2(traceable_, algorithm)<V>(CONCAT3(problem, _dim_, V));
+
+#define DUMP_TRACE_TO_JSON(algorithm, V, run_)\
+{CONCAT2(#run_, #algorithm), CONCAT4(run_evolution_,algorithm,_,V)}
 
 namespace AGE1
 {
@@ -317,6 +329,166 @@ namespace AGE1
 	}
 
 	template<unsigned N>
+	std::vector<float> traceable_hillclimb_best_improve(Problem<N>& problem)
+	{
+		NDimensionPoint<N> best_solution;
+		auto best_minimum = std::numeric_limits<float>::infinity();
+
+		const unsigned T_MAX = 30;
+		unsigned Temperature = 0;
+		const auto start = std::chrono::system_clock::now();
+
+		std::vector<float> run_evolution;
+
+		do
+		{
+			bool local = false;
+			auto random_solution = get_random_point<N>();
+			auto current_minimum = problem.functor(random_solution.coordinates);
+
+			do
+			{
+				NDimensionPoint<N> neighbor_best;
+				float neighbor_best_minimum = std::numeric_limits<float>::infinity();
+
+				for (unsigned i = 0; i < N; ++i)
+				{
+					for (unsigned l = 0; l < L; ++l)
+					{
+						auto neighbor = random_solution;
+						neighbor.coordinates[i][l].flip();
+
+						//Safety check for bit modification
+						Converter c;
+						c.ul = neighbor.coordinates[i].to_ulong();
+						if (isinf<float>(c.f) || isnan<float>(c.f))
+							continue;
+
+						auto neighbor_minimum = problem.functor(neighbor.coordinates);
+
+						if (neighbor_minimum < neighbor_best_minimum)
+						{
+							neighbor_best = neighbor;
+							neighbor_best_minimum = neighbor_minimum;
+						}
+					}
+				}
+
+				if (neighbor_best_minimum < current_minimum)
+				{
+					random_solution = neighbor_best;
+					current_minimum = neighbor_best_minimum;
+					static unsigned entry = 0;
+					entry++;
+					if (entry % 10 == 0 && run_evolution.size() < 100)
+						run_evolution.push_back(neighbor_best_minimum);
+				}
+				else
+				{
+					local = true;
+				}
+
+			} while (!local);
+
+			if (current_minimum < best_minimum)
+			{
+				best_solution = random_solution;
+				best_minimum = current_minimum;
+			}
+
+			Temperature += 1;
+		} while (Temperature < T_MAX && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() < 6 * N);
+
+
+		return run_evolution;
+	}
+
+	template<unsigned N>
+	std::vector<float> traceable_simulated_annealing(Problem<N>& problem)
+	{
+		srand(time(nullptr));
+
+		NDimensionPoint<N> best_solution;
+		auto best_minimum = std::numeric_limits<float>::infinity();
+
+		double Temperature = 1;
+		const auto term_time = std::chrono::system_clock::now();
+
+		std::vector<float> run_evolution;
+
+		do
+		{
+			//Random init
+			auto random_solution = get_random_point<N>();
+			auto current_minimum = problem.functor(random_solution.coordinates);
+
+			//Halting condition
+			bool local = false;
+			int repeats = 0;
+			const unsigned MAX_REPEATS = 30;
+			float last_minimum = -1;
+			const auto halt_time = std::chrono::system_clock::now();
+
+			do
+			{
+				if (current_minimum == last_minimum)
+				{
+					repeats++;
+				}
+				else
+				{
+					repeats = 0;
+				}
+
+				//Local init
+				auto n_location = rand() % N;
+				auto l_location = rand() % L;
+
+				auto neighbor = random_solution;
+				neighbor.coordinates[n_location][l_location].flip();
+
+				//Safety check for bit modification
+				Converter c;
+				c.ul = neighbor.coordinates[n_location].to_ulong();
+				if (isinf<float>(c.f) || isnan<float>(c.f))
+				{
+					repeats -= 1;
+					continue;
+				}
+
+				auto neighbor_minimum = problem.functor(neighbor.coordinates);
+
+				const auto random_sub = double((unsigned(rand()) % 32767) / double(32767));
+				if ((neighbor_minimum < current_minimum) || (random_sub < double(exp(-abs(abs(neighbor_minimum) - abs(current_minimum)) / Temperature)) / 1.5))
+				{
+					random_solution = neighbor;
+					current_minimum = neighbor_minimum;
+					static unsigned entry = 0;
+					entry++;
+					if (entry % 10 == 0 && run_evolution.size() < 100)
+						run_evolution.push_back(neighbor_minimum);
+				}
+				//Halting cond
+				else if (repeats > MAX_REPEATS || std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - halt_time).count() > 500)
+				{
+					local = true;
+				}
+
+			} while (!local);
+
+			if (current_minimum < best_minimum)
+			{
+				best_solution = random_solution;
+				best_minimum = current_minimum;
+			}
+
+			Temperature *= 0.9;
+		} while (Temperature > 0.001 && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - term_time).count() < 3);//Terminating cond
+
+		return run_evolution;
+	}
+
+	template<unsigned N>
 	struct HeuristicRunWrapper
 	{
 		float coordinates[30][N];
@@ -337,43 +509,49 @@ namespace AGE1
 
 		nlohmann::json create_json()
 		{
-			REGISTER_DIMENSION(2);
 			REGISTER_DIMENSION(5);
+			REGISTER_DIMENSION(10);
 			REGISTER_DIMENSION(30);
 			
 			//HC - best
 			printf("Started HC-Best on %s\n", instance.name.c_str());
-			REGISTER_FUNCTION(hillclimb_best_improve, 2);
 			REGISTER_FUNCTION(hillclimb_best_improve, 5);
+			REGISTER_FUNCTION(hillclimb_best_improve, 10);
 			REGISTER_FUNCTION(hillclimb_best_improve, 30);
 			printf("Ended HC-Best on %s\n", instance.name.c_str());
 
 			//HC - first
-			printf("Started HC - first on %s\n", instance.name.c_str());
-			REGISTER_FUNCTION(hillclimb_first_improve, 2);
-			REGISTER_FUNCTION(hillclimb_first_improve, 5);
-			REGISTER_FUNCTION(hillclimb_first_improve, 30);
-			printf("Ended HC - first on %s\n", instance.name.c_str());
+			//printf("Started HC - first on %s\n", instance.name.c_str());
+			//REGISTER_FUNCTION(hillclimb_first_improve, 2);
+			//REGISTER_FUNCTION(hillclimb_first_improve, 5);
+			//REGISTER_FUNCTION(hillclimb_first_improve, 30);
+			//printf("Ended HC - first on %s\n", instance.name.c_str());
 
+			//SA
 			printf("Started SA on %s\n", instance.name.c_str());
-			REGISTER_FUNCTION(simulated_annealing, 2);
 			REGISTER_FUNCTION(simulated_annealing, 5);
+			REGISTER_FUNCTION(simulated_annealing, 10);
 			REGISTER_FUNCTION(simulated_annealing, 30);
 			printf("Ended SA on %s\n", instance.name.c_str());
+
+			TRACE_ALGORITHM(hillclimb_best_improve, 30);
+			TRACE_ALGORITHM(simulated_annealing, 30);
 
 			nlohmann::json j = {
 				{"function-name", instance.name.c_str()},
 				{"global_minimum", std::to_string(instance.global_minimum)},
 				{"analysis",	nlohmann::json::array({
-				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 2),
 				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 5),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 10),
 				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 30),
-				DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 2),
-				DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 5),
-				DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 30),
-				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 2),
+				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 2),
+				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 5),
+				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 30),
 				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 5),
+				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 10),
 				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 30),
+				DUMP_TRACE_TO_JSON(hillclimb_best_improve, 30, run_),
+				DUMP_TRACE_TO_JSON(simulated_annealing, 30, run_)
 				})
 			} };
 
@@ -383,7 +561,7 @@ namespace AGE1
 		void create_output_file()
 		{
 			auto j = create_json();
-			std::string name("output_");
+			std::string name("output_age1_");
 			name += instance.name.c_str();
 			name += ".json";
 			std::ofstream out(name.c_str());
