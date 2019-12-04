@@ -12,6 +12,7 @@ using std::shuffle;
 using std::max_element;
 using std::min_element;
 using std::numeric_limits;
+using std::vector;
 
 #ifndef CONCAT2
 #define CONCAT2(x, y) x##y
@@ -39,8 +40,16 @@ for (unsigned repeat = 0; repeat < 30; ++repeat)\
 	CONCAT4(stringified_run_,algorithm,_,N)[repeat] = std::to_string(CONCAT4(run_,algorithm,_,N).func_values[repeat]);\
 }\
 
-#define TRACE_ALGORITHM(algorithm, V)\
-array<float, 100> CONCAT4(run_evolution_,algorithm,_,V) = CONCAT2(traceable_, algorithm)<V, Function>();
+#define TRACE_ALGORITHM(algorithm, V, filter_size)\
+vector<float> CONCAT4(run_evolution_,algorithm,_,V) = CONCAT2(traceable_, algorithm)<V, Function>();\
+vector<float> CONCAT4(less_run_evolution_, algorithm, _, V);\
+if (CONCAT4(run_evolution_, algorithm, _, V).size() >= filter_size){\
+	for (unsigned i = 0; i < CONCAT4(run_evolution_, algorithm, _, V).size(); i++)\
+		if (i % (CONCAT4(run_evolution_, algorithm, _, V).size() / filter_size) == 0)\
+			CONCAT4(less_run_evolution_, algorithm, _, V).push_back(CONCAT4(run_evolution_, algorithm, _, V)[i]);\
+} else {\
+	CONCAT4(less_run_evolution_,algorithm,_,V) = CONCAT4(run_evolution_,algorithm,_,V);\
+}
 
 #undef DUMP_ANALYSIS_TO_JSON
 #define DUMP_ANALYSIS_TO_JSON(algorithm, N, V)\
@@ -51,8 +60,8 @@ array<float, 100> CONCAT4(run_evolution_,algorithm,_,V) = CONCAT2(traceable_, al
 	{"deltas", CONCAT4(run_,algorithm,_,N).deltas},\
 }\
 
-#define DUMP_TRACE_TO_JSON(algorithm, V)\
-{"run_evolution", CONCAT4(run_evolution_,algorithm,_,V)}
+#define DUMP_TRACE_TO_JSON(algorithm, V, run_evolution_)\
+{CONCAT2(#run_evolution_, #algorithm), CONCAT4(less_run_evolution_,algorithm,_,V)}
 
 namespace AGE2
 {
@@ -233,7 +242,7 @@ namespace AGE2
 	}
 
 	template<unsigned N, template<unsigned V> class Function>
-	array<float, 100> traceable_genetic_algorithm() {
+	vector<float> traceable_genetic_algorithm() {
 
 		//CONSTANTS
 		constexpr unsigned pop_size = 100;
@@ -252,7 +261,7 @@ namespace AGE2
 		constexpr unsigned L = ceil_log2((interval.right - interval.left) * pow_c(10, 5));
 
 		//VARS
-		array<float, 100> run_evolution;
+		vector<float> run_evolution;
 
 		array<NDimensionPoint<L, N>, pop_size> pop;
 		unsigned current_generation = 0;
@@ -261,8 +270,6 @@ namespace AGE2
 
 		auto stop_condition = [&]() ->bool
 		{
-			if (current_generation % 10 == 0)
-				run_evolution[current_generation / 10] = best;
 			if (current_generation % 30 == 0)
 			{
 				best_fit += 1;
@@ -349,6 +356,8 @@ namespace AGE2
 			}
 			pop = new_pop;
 			best = min;
+
+			run_evolution.push_back(best);
 			
 		} while (!stop_condition());
 
@@ -369,22 +378,22 @@ namespace AGE2
 		{
 			//GA
 			printf("Started GA on %s\n", Function<1>::name);
-			REGISTER_ALGORITHM(genetic_algorithm, 5);
-			REGISTER_ALGORITHM(genetic_algorithm, 10);
-			REGISTER_ALGORITHM(genetic_algorithm, 30);
-			TRACE_ALGORITHM(genetic_algorithm, 30);
+			//REGISTER_ALGORITHM(genetic_algorithm, 5);
+			//REGISTER_ALGORITHM(genetic_algorithm, 10);
+			//REGISTER_ALGORITHM(genetic_algorithm, 30);
+			TRACE_ALGORITHM(genetic_algorithm, 30, 100);
 			printf("Ended GA on %s\n", Function<1>::name);
 
 			nlohmann::json j = {
 				{"function-name", Function<1>::name},
 				{"global_minimum", std::to_string(Function<1>::global_minimum)},
 				{"analysis",	nlohmann::json::array({
-				DUMP_ANALYSIS_TO_JSON(genetic_algorithm, 5),
-				DUMP_ANALYSIS_TO_JSON(genetic_algorithm, 10),
-				DUMP_ANALYSIS_TO_JSON(genetic_algorithm, 30),
-				DUMP_TRACE_TO_JSON(genetic_algorithm, 30)
+				//DUMP_ANALYSIS_TO_JSON(genetic_algorithm, 5),
+				//DUMP_ANALYSIS_TO_JSON(genetic_algorithm, 10),
+				//DUMP_ANALYSIS_TO_JSON(genetic_algorithm, 30)
 				})
-			} };
+				},DUMP_TRACE_TO_JSON(genetic_algorithm, 30, run_evolution_)
+			};
 
 			return j;
 		}

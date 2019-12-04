@@ -1,7 +1,0 @@
-project(AGEProj)
-
-file(GLOB_RECURSIVE SRC_FILES *.cpp *.c)
-
-add_executable(AGEProj ${SRC_FILES})
-
-install(TARGETS AGEProj DESTINATION "${COMPILE_ARCHITECTURE}/${COMPILE_CONFIGURATION}")

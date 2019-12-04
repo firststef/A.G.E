@@ -4,6 +4,7 @@
 #include <ctime>
 #include <chrono>
 #include <random>
+#include <vector>
 
 #ifndef CONCAT2
 #define CONCAT2(x, y) x##y
@@ -55,11 +56,19 @@ for (unsigned repeat = 0; repeat < 30; ++repeat)\
 	{"coordinates", CONCAT4(run_,function,_,N).coordinates}\
 }\
 
-#define TRACE_ALGORITHM(algorithm, V)\
-std::vector<float> CONCAT4(run_evolution_,algorithm,_,V) = CONCAT2(traceable_, algorithm)<V>(CONCAT3(problem, _dim_, V));
+#define TRACE_ALGORITHM(algorithm, V, filter_size)\
+std::vector<float> CONCAT4(run_evolution_,algorithm,_,V) = CONCAT2(traceable_, algorithm)<V>(CONCAT3(problem, _dim_, V));\
+std::vector<float> CONCAT4(less_run_evolution_,algorithm,_,V);\
+if (CONCAT4(run_evolution_,algorithm,_,V).size() >= filter_size){\
+	for(unsigned i=0; i < CONCAT4(run_evolution_,algorithm,_,V).size();i++)\
+		if (i % (CONCAT4(run_evolution_,algorithm,_,V).size() / filter_size) == 0)\
+			CONCAT4(less_run_evolution_, algorithm, _, V).push_back(CONCAT4(run_evolution_, algorithm, _, V)[i]);\
+} else {\
+	CONCAT4(less_run_evolution_,algorithm,_,V) = CONCAT4(run_evolution_,algorithm,_,V);\
+}
 
-#define DUMP_TRACE_TO_JSON(algorithm, V, run_)\
-{CONCAT2(#run_, #algorithm), CONCAT4(run_evolution_,algorithm,_,V)}
+#define DUMP_TRACE_TO_JSON(algorithm, V, run_evolution_)\
+{CONCAT2(#run_evolution_, #algorithm), CONCAT4(less_run_evolution_,algorithm,_,V)}
 
 namespace AGE1
 {
@@ -334,7 +343,7 @@ namespace AGE1
 		NDimensionPoint<N> best_solution;
 		auto best_minimum = std::numeric_limits<float>::infinity();
 
-		const unsigned T_MAX = 30;
+		const unsigned T_MAX = 100;
 		unsigned Temperature = 0;
 		const auto start = std::chrono::system_clock::now();
 
@@ -378,10 +387,6 @@ namespace AGE1
 				{
 					random_solution = neighbor_best;
 					current_minimum = neighbor_best_minimum;
-					static unsigned entry = 0;
-					entry++;
-					if (entry % 10 == 0 && run_evolution.size() < 100)
-						run_evolution.push_back(neighbor_best_minimum);
 				}
 				else
 				{
@@ -396,8 +401,10 @@ namespace AGE1
 				best_minimum = current_minimum;
 			}
 
+			run_evolution.push_back(best_minimum);
+
 			Temperature += 1;
-		} while (Temperature < T_MAX && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() < 6 * N);
+		} while (Temperature < T_MAX);
 
 
 		return run_evolution;
@@ -411,7 +418,7 @@ namespace AGE1
 		NDimensionPoint<N> best_solution;
 		auto best_minimum = std::numeric_limits<float>::infinity();
 
-		double Temperature = 1;
+		float Temperature = 1;
 		const auto term_time = std::chrono::system_clock::now();
 
 		std::vector<float> run_evolution;
@@ -463,10 +470,6 @@ namespace AGE1
 				{
 					random_solution = neighbor;
 					current_minimum = neighbor_minimum;
-					static unsigned entry = 0;
-					entry++;
-					if (entry % 10 == 0 && run_evolution.size() < 100)
-						run_evolution.push_back(neighbor_minimum);
 				}
 				//Halting cond
 				else if (repeats > MAX_REPEATS || std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - halt_time).count() > 500)
@@ -482,8 +485,10 @@ namespace AGE1
 				best_minimum = current_minimum;
 			}
 
-			Temperature *= 0.9;
-		} while (Temperature > 0.001 && std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - term_time).count() < 3);//Terminating cond
+			run_evolution.push_back(best_minimum);
+
+			Temperature *= 0.99f;
+		} while (Temperature > 0.365);//Terminating cond
 
 		return run_evolution;
 	}
@@ -515,9 +520,9 @@ namespace AGE1
 			
 			//HC - best
 			printf("Started HC-Best on %s\n", instance.name.c_str());
-			REGISTER_FUNCTION(hillclimb_best_improve, 5);
-			REGISTER_FUNCTION(hillclimb_best_improve, 10);
-			REGISTER_FUNCTION(hillclimb_best_improve, 30);
+			//REGISTER_FUNCTION(hillclimb_best_improve, 5);
+			//REGISTER_FUNCTION(hillclimb_best_improve, 10);
+			//REGISTER_FUNCTION(hillclimb_best_improve, 30);
 			printf("Ended HC-Best on %s\n", instance.name.c_str());
 
 			//HC - first
@@ -529,31 +534,32 @@ namespace AGE1
 
 			//SA
 			printf("Started SA on %s\n", instance.name.c_str());
-			REGISTER_FUNCTION(simulated_annealing, 5);
-			REGISTER_FUNCTION(simulated_annealing, 10);
-			REGISTER_FUNCTION(simulated_annealing, 30);
+			//REGISTER_FUNCTION(simulated_annealing, 5);
+			//REGISTER_FUNCTION(simulated_annealing, 10);
+			//REGISTER_FUNCTION(simulated_annealing, 30);
 			printf("Ended SA on %s\n", instance.name.c_str());
 
-			TRACE_ALGORITHM(hillclimb_best_improve, 30);
-			TRACE_ALGORITHM(simulated_annealing, 30);
+			TRACE_ALGORITHM(hillclimb_best_improve, 30, 100);
+			TRACE_ALGORITHM(simulated_annealing, 30, 100);
 
 			nlohmann::json j = {
 				{"function-name", instance.name.c_str()},
 				{"global_minimum", std::to_string(instance.global_minimum)},
 				{"analysis",	nlohmann::json::array({
-				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 5),
-				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 10),
-				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 30),
+				//DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 5),
+				//DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 10),
+				//DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 30),
 				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 2),
 				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 5),
 				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 30),
-				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 5),
-				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 10),
-				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 30),
-				DUMP_TRACE_TO_JSON(hillclimb_best_improve, 30, run_),
-				DUMP_TRACE_TO_JSON(simulated_annealing, 30, run_)
+				//DUMP_ANALYSIS_TO_JSON(simulated_annealing, 5),
+				//DUMP_ANALYSIS_TO_JSON(simulated_annealing, 10),
+				//DUMP_ANALYSIS_TO_JSON(simulated_annealing, 30)
 				})
-			} };
+				},
+				DUMP_TRACE_TO_JSON(hillclimb_best_improve, 30, run_evolution_),
+				DUMP_TRACE_TO_JSON(simulated_annealing, 30, run_evolution_),
+			};
 
 			return j;
 		}

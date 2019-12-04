@@ -1,0 +1,2032 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{minted}
+
+\definecolor{codegray}{gray}{0.9}
+\newcommand{\code}[1]{\colorbox{codegray}{\texttt{#1}}}
+
+\title{AG Tema 1P}
+\author{Stefan Petrovici}
+\date{October 2019}
+
+\pagestyle{empty}
+\pgfplotsset{compat=1.16}
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This report takes a closer look at how heuristic algorihtms handle candidates for the maximization problem. We will study hillclimber first and best algorithms.
+
+\subsection{Problem}
+We want to study the fitness landscape for a generic function: $$ f=x^3-60x^2+900x+100 $$
+
+\section{Method}
+The program logs the possible candidates for improving the solution and outputs them to a json file. This output will be listed at the end of this document.
+
+\section{Results}
+Maximul global este in punctul 01010 cu valoarea 10, respectiv 4100 prin functia f \\
+
+hillclimb\_best\_improve\_tracer: \\
+global\_maximum : 01010 \\
+01010 $<-$ 00010, 01000, 01011, 01110, 11010 \\
+fiecare din acesti candidati pot fi obtinuti din alti candidati \\
+00010 $<-$ 00000, 00011 \\
+01000 $<-$ null \\
+01011 $<-$ null \\
+01110 $<-$ 01111 \\
+11010 $<-$ 10010, 11000, 11011, 11110 \\
+Insa exista si bazine de maxim local: \\
+
+local\_maximum: 00001 $<-$ 00101, 01001, 10001 [!] \\
+local\_maximum: 00110 $<-$ ... \\
+local\_maximum: 11100 $<-$ ... \\
+
+si fiecare din cei mai sus va putea avea mai multi candidati din care este obtinut pana ajungem la cei 2^n => 32 de candidati \\
+
+hillclimb\_first\_improve\_tracer:\\
+global\_maximum : 01010 $<-$ 00010, 01000, 01011, 01110, 11010 \\
+local\_maximum: 00001 $<-$  00000, 00011, 00101, 01001, 10001 [!] \\
+local\_maximum: 00110 $<-$  ... \\
+local\_maximum: 11100 $<-$  ... \\
+
+\section{Conlusions}
+
+Ce se poate observa din reprezentarea arborescenta oferita de program este faptul ca la hillclimber first improvement arborele de continuare a rularii programului (sau arborele de imbunatatire) este mai mare in lungimea pe nivel si in adancime. Motivul pentru asta este ca avem mai multe posibilitati de imbunatatire al aceluiasi candidat si deci asta arata ca este mai putin performant in sens de gestionare de resurse pentru ca va accesa candidati care fie nu vor duce la maximul global fie la un drum mai lung pentru a ajunge la optim.
+
+\section{Output}
+
+\begin{listing}
+\begin{minted}[frame=single,
+               framesep=3mm,
+               linenos=true,
+               xleftmargin=0pt,
+               tabsize=4]{js}
+{
+  "hillclimb_best_improve_tracer": {
+    "00001": {
+      "children": {
+        "00101": {
+          "children": {},
+          "value": 2100.0
+        },
+        "01001": {
+          "children": {},
+          "value": 2692.0
+        },
+        "10001": {
+          "children": {
+            "11001": {
+              "children": {},
+              "value": 2399.0
+            }
+          },
+          "value": 2973.0
+        }
+      },
+      "value": 3236.0
+    },
+    "00110": {
+      "children": {
+        "00100": {
+          "children": {},
+          "value": 2804.0
+        },
+        "00111": {
+          "children": {},
+          "value": 212.0
+        }
+      },
+      "value": 3988.0
+    },
+    "01010": {
+      "children": {
+        "00010": {
+          "children": {
+            "00000": {
+              "children": {},
+              "value": 100.0
+            },
+            "00011": {
+              "children": {},
+              "value": 964.0
+            }
+          },
+          "value": 3972.0
+        },
+        "01000": {
+          "children": {},
+          "value": 1668.0
+        },
+        "01011": {
+          "children": {},
+          "value": 516.0
+        },
+        "01110": {
+          "children": {
+            "01111": {
+              "children": {},
+              "value": 100.0
+            }
+          },
+          "value": 3684.0
+        },
+        "11010": {
+          "children": {
+            "10010": {
+              "children": {
+                "10000": {
+                  "children": {},
+                  "value": 941.0
+                },
+                "10011": {
+                  "children": {},
+                  "value": 725.0
+                },
+                "10110": {
+                  "children": {
+                    "10100": {
+                      "children": {
+                        "10101": {
+                          "children": {},
+                          "value": 1801.0
+                        }
+                      },
+                      "value": 3225.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 3857.0
+                }
+              },
+              "value": 4069.0
+            },
+            "11000": {
+              "children": {},
+              "value": 2287.0
+            },
+            "11011": {
+              "children": {},
+              "value": 343.0
+            },
+            "11110": {
+              "children": {
+                "11111": {
+                  "children": {},
+                  "value": 131.0
+                }
+              },
+              "value": 3475.0
+            }
+          },
+          "value": 4071.0
+        }
+      },
+      "value": 4100.0
+    },
+    "11100": {
+      "children": {
+        "01100": {
+          "children": {
+            "01101": {
+              "children": {},
+              "value": 1508.0
+            }
+          },
+          "value": 3556.0
+        },
+        "11101": {
+          "children": {},
+          "value": 1227.0
+        }
+      },
+      "value": 3803.0
+    }
+  },
+  "hillclimb_first_improve_tracer": {
+    "00001": {
+      "children": {
+        "00000": {
+          "children": {},
+          "value": 100.0
+        },
+        "00011": {
+          "children": {
+            "00111": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                }
+              },
+              "value": 212.0
+            },
+            "01011": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "11011": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 343.0
+                }
+              },
+              "value": 516.0
+            },
+            "10011": {
+              "children": {
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                },
+                "11011": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 343.0
+                }
+              },
+              "value": 725.0
+            }
+          },
+          "value": 964.0
+        },
+        "00101": {
+          "children": {
+            "00111": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                }
+              },
+              "value": 212.0
+            },
+            "01101": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "11101": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 1227.0
+                }
+              },
+              "value": 1508.0
+            },
+            "10101": {
+              "children": {
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                },
+                "11101": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 1227.0
+                }
+              },
+              "value": 1801.0
+            }
+          },
+          "value": 2100.0
+        },
+        "01001": {
+          "children": {
+            "01000": {
+              "children": {
+                "00000": {
+                  "children": {},
+                  "value": 100.0
+                }
+              },
+              "value": 1668.0
+            },
+            "01011": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "11011": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 343.0
+                }
+              },
+              "value": 516.0
+            },
+            "01101": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "11101": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 1227.0
+                }
+              },
+              "value": 1508.0
+            },
+            "11001": {
+              "children": {
+                "11000": {
+                  "children": {
+                    "01000": {
+                      "children": {
+                        "00000": {
+                          "children": {},
+                          "value": 100.0
+                        }
+                      },
+                      "value": 1668.0
+                    },
+                    "10000": {
+                      "children": {
+                        "00000": {
+                          "children": {},
+                          "value": 100.0
+                        }
+                      },
+                      "value": 941.0
+                    }
+                  },
+                  "value": 2287.0
+                },
+                "11011": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 343.0
+                },
+                "11101": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 1227.0
+                }
+              },
+              "value": 2399.0
+            }
+          },
+          "value": 2692.0
+        },
+        "10001": {
+          "children": {
+            "10000": {
+              "children": {
+                "00000": {
+                  "children": {},
+                  "value": 100.0
+                }
+              },
+              "value": 941.0
+            },
+            "10011": {
+              "children": {
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                },
+                "11011": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 343.0
+                }
+              },
+              "value": 725.0
+            },
+            "10101": {
+              "children": {
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                },
+                "11101": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 1227.0
+                }
+              },
+              "value": 1801.0
+            },
+            "11001": {
+              "children": {
+                "11000": {
+                  "children": {
+                    "01000": {
+                      "children": {
+                        "00000": {
+                          "children": {},
+                          "value": 100.0
+                        }
+                      },
+                      "value": 1668.0
+                    },
+                    "10000": {
+                      "children": {
+                        "00000": {
+                          "children": {},
+                          "value": 100.0
+                        }
+                      },
+                      "value": 941.0
+                    }
+                  },
+                  "value": 2287.0
+                },
+                "11011": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 343.0
+                },
+                "11101": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 1227.0
+                }
+              },
+              "value": 2399.0
+            }
+          },
+          "value": 2973.0
+        }
+      },
+      "value": 3236.0
+    },
+    "00110": {
+      "children": {
+        "00010": {
+          "children": {
+            "00000": {
+              "children": {},
+              "value": 100.0
+            },
+            "00011": {
+              "children": {
+                "00111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 212.0
+                },
+                "01011": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "11011": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 343.0
+                    }
+                  },
+                  "value": 516.0
+                },
+                "10011": {
+                  "children": {
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    },
+                    "11011": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 343.0
+                    }
+                  },
+                  "value": 725.0
+                }
+              },
+              "value": 964.0
+            }
+          },
+          "value": 3972.0
+        },
+        "00100": {
+          "children": {
+            "00000": {
+              "children": {},
+              "value": 100.0
+            },
+            "00101": {
+              "children": {
+                "00111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 212.0
+                },
+                "01101": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "11101": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 1227.0
+                    }
+                  },
+                  "value": 1508.0
+                },
+                "10101": {
+                  "children": {
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    },
+                    "11101": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 1227.0
+                    }
+                  },
+                  "value": 1801.0
+                }
+              },
+              "value": 2100.0
+            }
+          },
+          "value": 2804.0
+        },
+        "00111": {
+          "children": {
+            "01111": {
+              "children": {},
+              "value": 100.0
+            },
+            "10111": {
+              "children": {},
+              "value": 129.0
+            }
+          },
+          "value": 212.0
+        },
+        "01110": {
+          "children": {
+            "01100": {
+              "children": {
+                "00100": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "00101": {
+                      "children": {
+                        "00111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 212.0
+                        },
+                        "01101": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "11101": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 1227.0
+                            }
+                          },
+                          "value": 1508.0
+                        },
+                        "10101": {
+                          "children": {
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            },
+                            "11101": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 1227.0
+                            }
+                          },
+                          "value": 1801.0
+                        }
+                      },
+                      "value": 2100.0
+                    }
+                  },
+                  "value": 2804.0
+                },
+                "01000": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    }
+                  },
+                  "value": 1668.0
+                },
+                "01101": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "11101": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 1227.0
+                    }
+                  },
+                  "value": 1508.0
+                }
+              },
+              "value": 3556.0
+            },
+            "01111": {
+              "children": {},
+              "value": 100.0
+            },
+            "11110": {
+              "children": {
+                "11111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 131.0
+                }
+              },
+              "value": 3475.0
+            }
+          },
+          "value": 3684.0
+        },
+        "10110": {
+          "children": {
+            "10100": {
+              "children": {
+                "00100": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "00101": {
+                      "children": {
+                        "00111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 212.0
+                        },
+                        "01101": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "11101": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 1227.0
+                            }
+                          },
+                          "value": 1508.0
+                        },
+                        "10101": {
+                          "children": {
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            },
+                            "11101": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 1227.0
+                            }
+                          },
+                          "value": 1801.0
+                        }
+                      },
+                      "value": 2100.0
+                    }
+                  },
+                  "value": 2804.0
+                },
+                "10000": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    }
+                  },
+                  "value": 941.0
+                },
+                "10101": {
+                  "children": {
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    },
+                    "11101": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 1227.0
+                    }
+                  },
+                  "value": 1801.0
+                }
+              },
+              "value": 3225.0
+            },
+            "10111": {
+              "children": {},
+              "value": 129.0
+            },
+            "11110": {
+              "children": {
+                "11111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 131.0
+                }
+              },
+              "value": 3475.0
+            }
+          },
+          "value": 3857.0
+        }
+      },
+      "value": 3988.0
+    },
+    "01010": {
+      "children": {
+        "00010": {
+          "children": {
+            "00000": {
+              "children": {},
+              "value": 100.0
+            },
+            "00011": {
+              "children": {
+                "00111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 212.0
+                },
+                "01011": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "11011": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 343.0
+                    }
+                  },
+                  "value": 516.0
+                },
+                "10011": {
+                  "children": {
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    },
+                    "11011": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 343.0
+                    }
+                  },
+                  "value": 725.0
+                }
+              },
+              "value": 964.0
+            }
+          },
+          "value": 3972.0
+        },
+        "01000": {
+          "children": {
+            "00000": {
+              "children": {},
+              "value": 100.0
+            }
+          },
+          "value": 1668.0
+        },
+        "01011": {
+          "children": {
+            "01111": {
+              "children": {},
+              "value": 100.0
+            },
+            "11011": {
+              "children": {
+                "11111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 131.0
+                }
+              },
+              "value": 343.0
+            }
+          },
+          "value": 516.0
+        },
+        "01110": {
+          "children": {
+            "01100": {
+              "children": {
+                "00100": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "00101": {
+                      "children": {
+                        "00111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 212.0
+                        },
+                        "01101": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "11101": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 1227.0
+                            }
+                          },
+                          "value": 1508.0
+                        },
+                        "10101": {
+                          "children": {
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            },
+                            "11101": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 1227.0
+                            }
+                          },
+                          "value": 1801.0
+                        }
+                      },
+                      "value": 2100.0
+                    }
+                  },
+                  "value": 2804.0
+                },
+                "01000": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    }
+                  },
+                  "value": 1668.0
+                },
+                "01101": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "11101": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 1227.0
+                    }
+                  },
+                  "value": 1508.0
+                }
+              },
+              "value": 3556.0
+            },
+            "01111": {
+              "children": {},
+              "value": 100.0
+            },
+            "11110": {
+              "children": {
+                "11111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 131.0
+                }
+              },
+              "value": 3475.0
+            }
+          },
+          "value": 3684.0
+        },
+        "11010": {
+          "children": {
+            "10010": {
+              "children": {
+                "00010": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "00011": {
+                      "children": {
+                        "00111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 212.0
+                        },
+                        "01011": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "11011": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 343.0
+                            }
+                          },
+                          "value": 516.0
+                        },
+                        "10011": {
+                          "children": {
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            },
+                            "11011": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 343.0
+                            }
+                          },
+                          "value": 725.0
+                        }
+                      },
+                      "value": 964.0
+                    }
+                  },
+                  "value": 3972.0
+                },
+                "10000": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    }
+                  },
+                  "value": 941.0
+                },
+                "10011": {
+                  "children": {
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    },
+                    "11011": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 343.0
+                    }
+                  },
+                  "value": 725.0
+                },
+                "10110": {
+                  "children": {
+                    "10100": {
+                      "children": {
+                        "00100": {
+                          "children": {
+                            "00000": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "00101": {
+                              "children": {
+                                "00111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 212.0
+                                },
+                                "01101": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "11101": {
+                                      "children": {
+                                        "11111": {
+                                          "children": {
+                                            "01111": {
+                                              "children": {},
+                                              "value": 100.0
+                                            },
+                                            "10111": {
+                                              "children": {},
+                                              "value": 129.0
+                                            }
+                                          },
+                                          "value": 131.0
+                                        }
+                                      },
+                                      "value": 1227.0
+                                    }
+                                  },
+                                  "value": 1508.0
+                                },
+                                "10101": {
+                                  "children": {
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    },
+                                    "11101": {
+                                      "children": {
+                                        "11111": {
+                                          "children": {
+                                            "01111": {
+                                              "children": {},
+                                              "value": 100.0
+                                            },
+                                            "10111": {
+                                              "children": {},
+                                              "value": 129.0
+                                            }
+                                          },
+                                          "value": 131.0
+                                        }
+                                      },
+                                      "value": 1227.0
+                                    }
+                                  },
+                                  "value": 1801.0
+                                }
+                              },
+                              "value": 2100.0
+                            }
+                          },
+                          "value": 2804.0
+                        },
+                        "10000": {
+                          "children": {
+                            "00000": {
+                              "children": {},
+                              "value": 100.0
+                            }
+                          },
+                          "value": 941.0
+                        },
+                        "10101": {
+                          "children": {
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            },
+                            "11101": {
+                              "children": {
+                                "11111": {
+                                  "children": {
+                                    "01111": {
+                                      "children": {},
+                                      "value": 100.0
+                                    },
+                                    "10111": {
+                                      "children": {},
+                                      "value": 129.0
+                                    }
+                                  },
+                                  "value": 131.0
+                                }
+                              },
+                              "value": 1227.0
+                            }
+                          },
+                          "value": 1801.0
+                        }
+                      },
+                      "value": 3225.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    },
+                    "11110": {
+                      "children": {
+                        "11111": {
+                          "children": {
+                            "01111": {
+                              "children": {},
+                              "value": 100.0
+                            },
+                            "10111": {
+                              "children": {},
+                              "value": 129.0
+                            }
+                          },
+                          "value": 131.0
+                        }
+                      },
+                      "value": 3475.0
+                    }
+                  },
+                  "value": 3857.0
+                }
+              },
+              "value": 4069.0
+            },
+            "11000": {
+              "children": {
+                "01000": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    }
+                  },
+                  "value": 1668.0
+                },
+                "10000": {
+                  "children": {
+                    "00000": {
+                      "children": {},
+                      "value": 100.0
+                    }
+                  },
+                  "value": 941.0
+                }
+              },
+              "value": 2287.0
+            },
+            "11011": {
+              "children": {
+                "11111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 131.0
+                }
+              },
+              "value": 343.0
+            },
+            "11110": {
+              "children": {
+                "11111": {
+                  "children": {
+                    "01111": {
+                      "children": {},
+                      "value": 100.0
+                    },
+                    "10111": {
+                      "children": {},
+                      "value": 129.0
+                    }
+                  },
+                  "value": 131.0
+                }
+              },
+              "value": 3475.0
+            }
+          },
+          "value": 4071.0
+        }
+      },
+      "value": 4100.0
+    },
+    "11100": {
+      "children": {
+        "01100": {
+          "children": {
+            "00100": {
+              "children": {
+                "00000": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "00101": {
+                  "children": {
+                    "00111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 212.0
+                    },
+                    "01101": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "11101": {
+                          "children": {
+                            "11111": {
+                              "children": {
+                                "01111": {
+                                  "children": {},
+                                  "value": 100.0
+                                },
+                                "10111": {
+                                  "children": {},
+                                  "value": 129.0
+                                }
+                              },
+                              "value": 131.0
+                            }
+                          },
+                          "value": 1227.0
+                        }
+                      },
+                      "value": 1508.0
+                    },
+                    "10101": {
+                      "children": {
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        },
+                        "11101": {
+                          "children": {
+                            "11111": {
+                              "children": {
+                                "01111": {
+                                  "children": {},
+                                  "value": 100.0
+                                },
+                                "10111": {
+                                  "children": {},
+                                  "value": 129.0
+                                }
+                              },
+                              "value": 131.0
+                            }
+                          },
+                          "value": 1227.0
+                        }
+                      },
+                      "value": 1801.0
+                    }
+                  },
+                  "value": 2100.0
+                }
+              },
+              "value": 2804.0
+            },
+            "01000": {
+              "children": {
+                "00000": {
+                  "children": {},
+                  "value": 100.0
+                }
+              },
+              "value": 1668.0
+            },
+            "01101": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "11101": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 1227.0
+                }
+              },
+              "value": 1508.0
+            }
+          },
+          "value": 3556.0
+        },
+        "10100": {
+          "children": {
+            "00100": {
+              "children": {
+                "00000": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "00101": {
+                  "children": {
+                    "00111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 212.0
+                    },
+                    "01101": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "11101": {
+                          "children": {
+                            "11111": {
+                              "children": {
+                                "01111": {
+                                  "children": {},
+                                  "value": 100.0
+                                },
+                                "10111": {
+                                  "children": {},
+                                  "value": 129.0
+                                }
+                              },
+                              "value": 131.0
+                            }
+                          },
+                          "value": 1227.0
+                        }
+                      },
+                      "value": 1508.0
+                    },
+                    "10101": {
+                      "children": {
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        },
+                        "11101": {
+                          "children": {
+                            "11111": {
+                              "children": {
+                                "01111": {
+                                  "children": {},
+                                  "value": 100.0
+                                },
+                                "10111": {
+                                  "children": {},
+                                  "value": 129.0
+                                }
+                              },
+                              "value": 131.0
+                            }
+                          },
+                          "value": 1227.0
+                        }
+                      },
+                      "value": 1801.0
+                    }
+                  },
+                  "value": 2100.0
+                }
+              },
+              "value": 2804.0
+            },
+            "10000": {
+              "children": {
+                "00000": {
+                  "children": {},
+                  "value": 100.0
+                }
+              },
+              "value": 941.0
+            },
+            "10101": {
+              "children": {
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                },
+                "11101": {
+                  "children": {
+                    "11111": {
+                      "children": {
+                        "01111": {
+                          "children": {},
+                          "value": 100.0
+                        },
+                        "10111": {
+                          "children": {},
+                          "value": 129.0
+                        }
+                      },
+                      "value": 131.0
+                    }
+                  },
+                  "value": 1227.0
+                }
+              },
+              "value": 1801.0
+            }
+          },
+          "value": 3225.0
+        },
+        "11000": {
+          "children": {
+            "01000": {
+              "children": {
+                "00000": {
+                  "children": {},
+                  "value": 100.0
+                }
+              },
+              "value": 1668.0
+            },
+            "10000": {
+              "children": {
+                "00000": {
+                  "children": {},
+                  "value": 100.0
+                }
+              },
+              "value": 941.0
+            }
+          },
+          "value": 2287.0
+        },
+        "11101": {
+          "children": {
+            "11111": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                }
+              },
+              "value": 131.0
+            }
+          },
+          "value": 1227.0
+        },
+        "11110": {
+          "children": {
+            "11111": {
+              "children": {
+                "01111": {
+                  "children": {},
+                  "value": 100.0
+                },
+                "10111": {
+                  "children": {},
+                  "value": 129.0
+                }
+              },
+              "value": 131.0
+            }
+          },
+          "value": 3475.0
+        }
+      },
+      "value": 3803.0
+    }
+  }
+}
+\end{minted}
+\caption{JSON example}
+\label{json-example}
+\end{listing}
+
+\end{document}

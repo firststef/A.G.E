@@ -7,6 +7,7 @@ from json import encoder
 import numpy
 import datetime
 import sys
+import matplotlib.pyplot as plt
 
 sys.setrecursionlimit(100)
 
@@ -155,7 +156,7 @@ def main(argv):
 
             if arg == 'age1':
                 final_table = []
-                for func in supported_functions_age0:
+                for func in supported_functions_age1:
                     with open('output_age1_' + func + '.json', 'r') as f:
                         encoder.FLOAT_REPR = lambda o: format(o, '.5f')
                         numpy.set_printoptions(formatter={"float_kind": lambda x: "%g" % x})
@@ -230,8 +231,9 @@ def main(argv):
                         json.dump(res_dict, j)
 
             if arg == 'age2':
+                # Generating table
                 final_table = []
-                for func in supported_functions_age0:
+                for func in supported_functions_age2:
                     with open('output_age2_' + func + '.json', 'r') as f:
                         encoder.FLOAT_REPR = lambda o: format(o, '.5f')
                         numpy.set_printoptions(formatter={"float_kind": lambda x: "%g" % x})
@@ -274,6 +276,36 @@ def main(argv):
                         else:
                             prettified_strings.append(str(val))
                     print(' & '.join([val for val in prettified_strings]), end=' \\\\\n')
+
+                # Generating graph
+                for func in supported_functions_age2:
+                    plot_dict = {}
+
+                    def get_data(file: str):
+                        with open(file, 'r') as fo:
+                            d = json.load(fo)
+
+                            for a in d['analysis']:
+                                for d_key, d_val in a.items():
+                                    if d_key.startswith('run_evolution_'):
+                                        plot_dict[d_key[len('run_evolution_'):]] = d_val
+
+                    get_data('output_age2_' + func + '.json')
+                    get_data('output_age1_' + func + '.json')
+                    a = plt.gca()
+                    # plt.gca().set_color_cycle(['red', 'green', 'blue'])
+
+                    lists = plot_dict.values()
+                    min_n = min([len(y) for y in lists])
+                    for lst in lists:
+                        plt.plot(range(0, min_n), lst[:min_n])
+
+                    plt.legend(plot_dict.keys(), loc='upper right', title=func)
+
+                    fig = plt.figure()
+                    fig.savefig(func + '.png')
+                    plt.show()
+
 
 
 if __name__ == "__main__":
