@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
 	printf("================== A.G.E. source ==================\n");
 	printf("### 2019 - Petrovici Stefan ###\n");
 
-	if (argc <= 1)
+	if (argc <= 2)
 	{
 		printf("\nHELP: pass => age0/age1 for running source + the name of the function you want to analyze.\n");
 		printf("\n  ex: AGEProj.exe age1 rastrigin\n");
@@ -144,8 +144,41 @@ int main(int argc, char** argv) {
 		{
 			printf("Function not supported\n");
 		}
-
-		system("pause");
+	}
+	else if (std::string(argv[1]) == std::string("age2p"))
+	{
+		if (std::string(argv[2]) == std::string("rastrigin"))
+		{
+			//AGE2::AlgorythmAnalyzerAGE2<AGE2::Rastrigin> analyzer1;
+			//analyzer1.create_output_file();
+			AGE2::AlgorythmAnalyzerAGE2p<AGE2::Rastrigin> analyzer2;
+			analyzer2.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("schwefel"))
+		{
+			//AGE2::AlgorythmAnalyzerAGE2<AGE2::Schwefel> analyzer1;
+			//analyzer1.create_output_file();
+			AGE2::AlgorythmAnalyzerAGE2p<AGE2::Schwefel> analyzer2;
+			analyzer2.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("rosenbrock"))
+		{
+			//AGE2::AlgorythmAnalyzerAGE2<AGE2::Rosenbrock> analyzer1;
+			//analyzer1.create_output_file();
+			AGE2::AlgorythmAnalyzerAGE2p<AGE2::Rosenbrock> analyzer2;
+			analyzer2.create_output_file();
+		}
+		else if (std::string(argv[2]) == std::string("sphere"))
+		{
+			//AGE2::AlgorythmAnalyzerAGE2<AGE2::Sphere> analyzer1;
+			//analyzer1.create_output_file();
+			AGE2::AlgorythmAnalyzerAGE2p<AGE2::Sphere> analyzer2;
+			analyzer2.create_output_file();
+		}
+		else
+		{
+			printf("Function not supported\n");
+		}
 	}
 	else
 	{

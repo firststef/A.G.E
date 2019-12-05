@@ -87,6 +87,12 @@ def main(argv):
                     t.start()
                     threads.append(t)
 
+            if arg == 'age2p':
+                for func in supported_functions_age2:
+                    t = threading.Thread(target=generate_output_func, args=(arg, func,))
+                    t.start()
+                    threads.append(t)
+
             for t in threads:
                 t.join()
 
@@ -292,7 +298,6 @@ def main(argv):
 
                     get_data('output_age2_' + func + '.json')
                     get_data('output_age1_' + func + '.json')
-                    a = plt.gca()
                     # plt.gca().set_color_cycle(['red', 'green', 'blue'])
 
                     lists = plot_dict.values()
@@ -306,6 +311,79 @@ def main(argv):
                     fig.savefig(func + '.png')
                     plt.show()
 
+            if arg == 'age2p':
+                # Generating table
+                final_table = []
+                for func in supported_functions_age2:
+                    with open('output_age2p_' + func + '.json', 'r') as f:
+                        encoder.FLOAT_REPR = lambda o: format(o, '.5f')
+                        numpy.set_printoptions(formatter={"float_kind": lambda x: "%g" % x})
+                        numpy.set_printoptions(precision=6)
+                        data = json.load(f)
+
+                        for analysis in data['analysis']:
+                            if 'results' not in analysis:
+                                continue
+                            results = [float(n) for n in analysis['results']]
+                            run_time = sum(analysis['deltas']) / 1000000
+                            h_table_line = {
+                                'algorithm': analysis['algorythm-name'],
+                                'function_name': func,
+                                'dimension': analysis['dimension'],
+                                'mean': numpy.mean(results),
+                                'max': numpy.max(results),
+                                'min': numpy.min(results),
+                                'median': numpy.median(results),
+                                'mean_run_time': numpy.mean(analysis['deltas']) / 1000000,  # converting to seconds
+                                'run_time': run_time / 60,
+                                'sd': numpy.std(results)
+                            }
+                            final_table.append(h_table_line)
+
+                with open('final_result.json', 'w') as final:
+                    json.dump(final_table, final)
+
+                printed_head = False
+                for line in final_table:
+                    if not printed_head:
+                        print(' & '.join([key.capitalize() for key, val in line.items()]), end=' \\\\\n')
+                        printed_head = True
+                        print()
+
+                    prettified_strings = []
+                    for cand, val in line.items():
+                        if type(val) == float or type(val) == numpy.float64:
+                            prettified_strings.append('{:.5f}'.format(val))
+                        else:
+                            prettified_strings.append(str(val))
+                    print(' & '.join([val for val in prettified_strings]), end=' \\\\\n')
+
+                # Generating graph
+                for func in supported_functions_age2:
+                    plot_dict = {}
+
+                    def get_data(file: str):
+                        with open(file, 'r') as fo:
+                            d = json.load(fo)
+
+                            for a in d['analysis']:
+                                for d_key, d_val in a.items():
+                                    if d_key.startswith('run_evolution_'):
+                                        plot_dict[d_key[len('run_evolution_'):]] = d_val
+
+                    get_data('output_age2_' + func + '.json')
+                    get_data('output_age2p_' + func + '.json')
+
+                    lists = plot_dict.values()
+                    min_n = min([len(y) for y in lists])
+                    for lst in lists:
+                        plt.plot(range(0, min_n), lst[:min_n])
+
+                    plt.legend(plot_dict.keys(), loc='upper right', title=func)
+
+                    fig = plt.figure()
+                    fig.savefig(func + '.png')
+                    plt.show()
 
 
 if __name__ == "__main__":

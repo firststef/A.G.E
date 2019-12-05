@@ -520,9 +520,9 @@ namespace AGE1
 			
 			//HC - best
 			printf("Started HC-Best on %s\n", instance.name.c_str());
-			//REGISTER_FUNCTION(hillclimb_best_improve, 5);
-			//REGISTER_FUNCTION(hillclimb_best_improve, 10);
-			//REGISTER_FUNCTION(hillclimb_best_improve, 30);
+			REGISTER_FUNCTION(hillclimb_best_improve, 5);
+			REGISTER_FUNCTION(hillclimb_best_improve, 10);
+			REGISTER_FUNCTION(hillclimb_best_improve, 30);
 			printf("Ended HC-Best on %s\n", instance.name.c_str());
 
 			//HC - first
@@ -534,9 +534,9 @@ namespace AGE1
 
 			//SA
 			printf("Started SA on %s\n", instance.name.c_str());
-			//REGISTER_FUNCTION(simulated_annealing, 5);
-			//REGISTER_FUNCTION(simulated_annealing, 10);
-			//REGISTER_FUNCTION(simulated_annealing, 30);
+			REGISTER_FUNCTION(simulated_annealing, 5);
+			REGISTER_FUNCTION(simulated_annealing, 10);
+			REGISTER_FUNCTION(simulated_annealing, 30);
 			printf("Ended SA on %s\n", instance.name.c_str());
 
 			TRACE_ALGORITHM(hillclimb_best_improve, 30, 100);
@@ -546,19 +546,19 @@ namespace AGE1
 				{"function-name", instance.name.c_str()},
 				{"global_minimum", std::to_string(instance.global_minimum)},
 				{"analysis",	nlohmann::json::array({
-				//DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 5),
-				//DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 10),
-				//DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 30),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 5),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 10),
+				DUMP_ANALYSIS_TO_JSON(hillclimb_best_improve, 30),
 				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 2),
 				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 5),
 				//DUMP_ANALYSIS_TO_JSON(hillclimb_first_improve, 30),
-				//DUMP_ANALYSIS_TO_JSON(simulated_annealing, 5),
-				//DUMP_ANALYSIS_TO_JSON(simulated_annealing, 10),
-				//DUMP_ANALYSIS_TO_JSON(simulated_annealing, 30)
-				})
-				},
+				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 5),
+				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 10),
+				DUMP_ANALYSIS_TO_JSON(simulated_annealing, 30),
 				DUMP_TRACE_TO_JSON(hillclimb_best_improve, 30, run_evolution_),
 				DUMP_TRACE_TO_JSON(simulated_annealing, 30, run_evolution_),
+				})
+				}
 			};
 
 			return j;
