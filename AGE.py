@@ -37,6 +37,7 @@ def main(argv):
         print('HELP: pass -b for building the executable from the sln')
         print('      pass -r for running the analysis on the available functions + age0/age1 type analyzer')
         print('      pass -a to generate statistics + age0/age1 type analyzer')
+        print('      pass -g to generate utility tables for age3 - SAT problem')
         print('      => Analysers : age0 - generates output for two algorithms:')
         print('      =>                    a deterministic binary search algorithm')
         print('      =>                    a heuristic algorithm')
@@ -45,7 +46,7 @@ def main(argv):
         print('      =>                    hill_climbing best improve')
         print('      =>                    simulated_annealing')
 
-    opts, args = getopt.getopt(sys.argv[1:], "br:a:", ["analyze=", "run="])
+    opts, args = getopt.getopt(sys.argv[1:], "br:a:g:", ["analyze=", "run=", "generate="])
 
     for opt, arg in opts:
 
@@ -384,6 +385,66 @@ def main(argv):
                     fig = plt.figure()
                     fig.savefig(func + '.png')
                     plt.show()
+
+        # generate utils for SAT
+        if opt in ('-g', '--generate'):
+            with open(arg, 'r') as gf:
+                variables = 0
+                clauses = 0
+                main_str = ''
+                decl_str = ''
+                out_decl_str = ''
+                vec_str = ''
+                end_str = '\n};'
+                counter = 0
+                for line in gf.readlines():
+                    if line[0] == 'c':
+                        continue
+                    if line[0] == 'p':
+                        splices = line.split(' ')
+                        if splices[1] != 'cnf':
+                            raise NotImplementedError
+                        variables = int(splices[2])
+                        clauses = int(splices[3])
+                        main_str = 'struct Problem {\n\tstatic std::bitset<' + str(variables) + '> bitstring;\n\ttypedef bool(*clause_ptr)();\n\tstatic clause_ptr clauses[' + str(clauses) + '];\n'
+                        out_decl_str = '};\nProblem::clause_ptr Problem::clauses[' + str(clauses) + '] = {\n'
+                        continue
+                    if not any([str(d) in line for d in range(0, 10)]):
+                        continue
+                    splices = line.split(' ')
+                    if all('\n'in spl or spl == '' for spl in splices):
+                        continue
+                    try:
+                        if not (all([int(spl) for spl in splices if '\n' not in spl and spl != ''])):
+                            continue
+                    except ValueError:
+                        continue
+                    decl_str += '\tstatic bool clause' + str(counter) + '(){return '
+                    vec_str += '&clause' + str(counter) + ',\n'
+                    counter += 1
+                    for num in splices:
+                        try:
+                            val = int(num)
+                        except ValueError:
+                            continue
+                        if val < 0:
+                            decl_str += 'not(bitstring[' + str(abs(val) - 1) + '])+'
+                        elif val > 0:
+                            decl_str += 'bitstring[' + str(val - 1) + ']+'
+                    decl_str = decl_str[:-1] + ';}\n'
+                vec_str = vec_str[:-2]
+
+                print(main_str)
+                print(decl_str)
+                print(out_decl_str)
+                print(vec_str)
+                print(end_str)
+                with open('gen_age3_utils.txt', 'w') as gage3:
+                    gage3.write(main_str)
+                    gage3.write(decl_str)
+                    gage3.write(out_decl_str)
+                    gage3.write(vec_str)
+                    gage3.write(end_str)
 
 
 if __name__ == "__main__":

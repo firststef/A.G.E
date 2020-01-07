@@ -1,12 +1,13 @@
 #pragma once
 #define _USE_MATH_DEFINES
-#include "AGE.h"
 #include <bitset>
 #include <string>
 #include <cmath>
 
 namespace AGE1p
 {
+	constexpr auto two_at_32_m_1 = 4294967295ul;
+	
 	template<bool Sgn, unsigned Ex, unsigned Man>
 	struct fixed_point_number
 	{

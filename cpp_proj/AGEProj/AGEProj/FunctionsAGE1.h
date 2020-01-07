@@ -1,6 +1,5 @@
 #pragma once
 #define _USE_MATH_DEFINES
-#include "AGE.h"
 #include <bitset>
 #include <string>
 #include <math.h>
@@ -8,6 +7,8 @@
 
 namespace AGE1
 {
+	constexpr auto two_at_32_m_1 = 4294967295ul;
+	
 	constexpr int L = sizeof(std::uint32_t) * 8;
 
 	using bitstring = std::bitset<L>;

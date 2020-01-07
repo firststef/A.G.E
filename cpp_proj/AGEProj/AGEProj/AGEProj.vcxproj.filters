@@ -18,11 +18,11 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SourceAGE3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AGE.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
     <ClInclude Include="FunctionsAGE1.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
@@ -51,6 +51,12 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="constexpr_functions.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlgorithmsAGE3.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FunctionsAGE3.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>

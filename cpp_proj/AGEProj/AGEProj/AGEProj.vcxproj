@@ -79,6 +79,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>".";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -120,18 +121,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="SourceAGE3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AGE.h" />
     <ClInclude Include="AlgorithmsAGE0.h" />
     <ClInclude Include="AlgorithmsAGE1.h" />
     <ClInclude Include="AlgorithmsAGE1p.h" />
     <ClInclude Include="AlgorithmsAGE2.h" />
+    <ClInclude Include="AlgorithmsAGE3.h" />
     <ClInclude Include="constexpr_functions.h" />
     <ClInclude Include="FunctionsAGE0.h" />
     <ClInclude Include="FunctionsAGE1.h" />
     <ClInclude Include="FunctionsAGE1p.h" />
     <ClInclude Include="FunctionsAGE2.h" />
+    <ClInclude Include="FunctionsAGE3.h" />
     <ClInclude Include="json.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

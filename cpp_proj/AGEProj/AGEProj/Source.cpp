@@ -2,6 +2,7 @@
 #include "AlgorithmsAGE1.h"
 #include "AlgorithmsAGE1p.h"
 #include "AlgorithmsAGE2.h"
+#include "AlgorithmsAGE3.h"
 
 int main(int argc, char** argv) {
 
@@ -18,6 +19,7 @@ int main(int argc, char** argv) {
 	printf("Analyzer is running, please wait.\n");
 	printf("The output file (.json format) will be generated in this directory.\n");
 
+	system("pause");
 	if (std::string(argv[1]) == std::string("age0"))
 	{
 		if (std::string(argv[2]) == std::string("rastrigin"))
@@ -180,11 +182,19 @@ int main(int argc, char** argv) {
 			printf("Function not supported\n");
 		}
 	}
+	else if (std::string(argv[1]) == std::string("age3"))
+	{
+		auto x = AGE3::sat_solver<AGE3_1::Problem>();
+
+		system("pause");
+	}
 	else
 	{
+	
 		printf("Command not recognized\n");
 	}
 
+	system("pause");
 	printf("Analysis finished\n");
 
 	return 1;
