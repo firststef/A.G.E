@@ -91,12 +91,14 @@ namespace AGE1
 			
 			std::uint32_t r = std::numeric_limits<unsigned>::infinity();
 
+#ifndef __GNUG__
 			while (isnan<float>(c.f) || isinf<float>(c.f))
 			{
 				unsigned random[3] = { rand(), rand(), rand() };
 				r = random[0] + (random[1] << 14ul) + (random[2] << 28ul);
 				c.ul = r;
 			}
+#endif
 			
 			point.coordinates[i] = r;
 		}
@@ -135,8 +137,10 @@ namespace AGE1
 						//Safety check for bit modification
 						Converter c;
 						c.ul = neighbor.coordinates[i].to_ulong();
+#ifndef __GNUG__
 						if (isinf<float>(c.f) || isnan<float>(c.f))
 							continue;
+#endif
 
 						auto neighbor_minimum = problem.functor(neighbor.coordinates);
 
@@ -216,8 +220,10 @@ namespace AGE1
 					//Safety check for bit modification
 					Converter c;
 					c.ul = neighbor.coordinates[i].to_ulong();
+#ifndef __GNUG__
 					if (isinf<float>(c.f) || isnan<float>(c.f))
 						continue;
+#endif
 
 					auto neighbor_minimum = problem.functor(neighbor.coordinates);
 
@@ -303,11 +309,13 @@ namespace AGE1
 				//Safety check for bit modification
 				Converter c;
 				c.ul = neighbor.coordinates[n_location].to_ulong();
+#ifndef __GNUG__
 				if (isinf<float>(c.f) || isnan<float>(c.f))
 				{
 					repeats -= 1;
 					continue;
 				}
+#endif
 
 				auto neighbor_minimum = problem.functor(neighbor.coordinates);
 
@@ -370,8 +378,10 @@ namespace AGE1
 						//Safety check for bit modification
 						Converter c;
 						c.ul = neighbor.coordinates[i].to_ulong();
+#ifndef __GNUG__
 						if (isinf<float>(c.f) || isnan<float>(c.f))
 							continue;
+#endif
 
 						auto neighbor_minimum = problem.functor(neighbor.coordinates);
 
@@ -457,11 +467,13 @@ namespace AGE1
 				//Safety check for bit modification
 				Converter c;
 				c.ul = neighbor.coordinates[n_location].to_ulong();
+#ifndef __GNUG__
 				if (isinf<float>(c.f) || isnan<float>(c.f))
 				{
 					repeats -= 1;
 					continue;
 				}
+#endif
 
 				auto neighbor_minimum = problem.functor(neighbor.coordinates);
 
@@ -514,6 +526,7 @@ namespace AGE1
 
 		nlohmann::json create_json()
 		{
+#ifndef __GNUG__
 			REGISTER_DIMENSION(5);
 			REGISTER_DIMENSION(10);
 			REGISTER_DIMENSION(30);
@@ -541,8 +554,13 @@ namespace AGE1
 
 			TRACE_ALGORITHM(hillclimb_best_improve, 30, 100);
 			TRACE_ALGORITHM(simulated_annealing, 30, 100);
+#endif
 
-			nlohmann::json j = {
+			nlohmann::json j
+#ifdef __GNUG__
+				;
+#else
+			= {
 				{"function-name", instance.name.c_str()},
 				{"global_minimum", std::to_string(instance.global_minimum)},
 				{"analysis",	nlohmann::json::array({
@@ -560,6 +578,7 @@ namespace AGE1
 				})
 				}
 			};
+#endif
 
 			return j;
 		}

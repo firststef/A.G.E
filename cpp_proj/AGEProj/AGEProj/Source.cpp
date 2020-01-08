@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
 	printf("================== A.G.E. source ==================\n");
 	printf("### 2019 - Petrovici Stefan ###\n");
 
-	if (argc <= 2)
+	if (argc < 2)
 	{
 		printf("\nHELP: pass => age0/age1 for running source + the name of the function you want to analyze.\n");
 		printf("\n  ex: AGEProj.exe age1 rastrigin\n");
@@ -19,7 +19,6 @@ int main(int argc, char** argv) {
 	printf("Analyzer is running, please wait.\n");
 	printf("The output file (.json format) will be generated in this directory.\n");
 
-	system("pause");
 	if (std::string(argv[1]) == std::string("age0"))
 	{
 		if (std::string(argv[2]) == std::string("rastrigin"))
@@ -184,9 +183,11 @@ int main(int argc, char** argv) {
 	}
 	else if (std::string(argv[1]) == std::string("age3"))
 	{
-		auto x = AGE3::sat_solver<AGE3_1::Problem>();
-
-		system("pause");
+		const auto start = std::chrono::system_clock::now();
+		auto file = parse_file(argv[2]);
+		auto x = AGE3::sat_solver(file);
+		std::cout << (file.num_clauses - x)/file.num_clauses << std::endl;
+		std::cout << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() << std::endl;
 	}
 	else
 	{
@@ -194,7 +195,6 @@ int main(int argc, char** argv) {
 		printf("Command not recognized\n");
 	}
 
-	system("pause");
 	printf("Analysis finished\n");
 
 	return 1;

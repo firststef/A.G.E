@@ -682,6 +682,7 @@ namespace AGE2
 	{
 		nlohmann::json create_json()
 		{
+#ifndef __GNUG__
 			//GA
 			printf("Started GA on %s\n", Function<1>::name);
 			REGISTER_ALGORITHM(genetic_algorithm, 5);
@@ -701,6 +702,9 @@ namespace AGE2
 				})
 				}
 			};
+#else
+			nlohmann::json j;
+#endif
 
 			return j;
 		}
@@ -721,6 +725,7 @@ namespace AGE2
 	{
 		nlohmann::json create_json()
 		{
+#ifndef __GNUG__
 			//GA
 			printf("Started GA on %s\n", Function<1>::name);
 			REGISTER_ALGORITHM(adaptive_genetic_algorithm, 5);
@@ -740,6 +745,9 @@ namespace AGE2
 				})
 				}
 			};
+#else
+nlohmann::json j;
+#endif
 
 			return j;
 		}

@@ -3,24 +3,24 @@
 
 namespace AGE3
 {
-	template<unsigned L>
-	struct NDimensionPoint
+	struct Chromosome
 	{
 		static unsigned seed;
 
-		bitset<L> value;
+		std::vector<bool> value;
 
 		void mutate(float prob)
 		{
-			for (unsigned i = 0; i < L; ++i) {
+			for (unsigned i = 0; i < value.size(); ++i) {
 				if (rand() % 1000 < prob * 1000)
 					value[i].flip();
 			}
 		}
 
 		//Crossover
-		void operator& (NDimensionPoint& other)
+		void operator& (Chromosome& other)
 		{
+			const unsigned L = value.size();
 			const unsigned ch_pos = rand() % (L);
 
 			for (unsigned j = ch_pos % L; j < L; ++j)
@@ -31,11 +31,9 @@ namespace AGE3
 			}
 		}
 	};
-	template<unsigned L>
-	unsigned NDimensionPoint<L>::seed = []() {const auto seed = time(nullptr);  srand(seed); return seed; }();
+	unsigned Chromosome::seed = []() {const auto seed = time(nullptr);  srand(seed); return seed; }();
 
-	template<typename Class>
-	float sat_solver() {
+	float sat_solver(const ProblemInstance& problem) {
 
 		//CONSTANTS
 		constexpr unsigned pop_size = 100;
@@ -49,25 +47,30 @@ namespace AGE3
 		float average_fit = 1.1f;
 		float worst_fit = 1.1f;
 
-		auto pressure_function = [&](decltype(Class::bitstring)& bitset) -> float
+		const auto pressure_function = [&](Chromosome candidate) -> float
 		{
-			Class::bitstring = bitset;
 			int count = 0;
-			for (auto& f : Class::clauses)
+			for (auto& c : problem.clauses)
 			{
-				if (f())
-					count++;
+				for(auto& var_num : c)
+				{
+					if (((var_num > 0) ? 1 : -1) * candidate.value[(var_num > 0) ? var_num - 1 : abs(var_num + 1)])
+					{
+						count++;
+						break;
+					}
+				}
 			}
-			return 19084-count;
+			return problem.num_clauses - count;
 		};
 		auto engine = std::mt19937{ std::random_device{}() };
 
 		//VARS
-		//float global_best = numeric_limits<float>::infinity();
+		float global_best = numeric_limits<float>::infinity();
 
 		//RUN
 		//for (unsigned run = 0; run < 15; run++) {
-			array<NDimensionPoint<Class::variables>, pop_size> pop;
+			array<Chromosome, pop_size> pop;
 			unsigned current_generation = 0;
 
 			float best = numeric_limits<float>::infinity();
@@ -104,6 +107,7 @@ namespace AGE3
 			//Init phase
 			for (auto& c : pop)
 			{
+				c.value.resize(problem.num_variables);
 				c.mutate(0.5f);
 			}
 
@@ -145,7 +149,7 @@ namespace AGE3
 
 					//Deocamdata fara codul gray
 
-					values[i] = pressure_function(pop[i].value);
+					values[i] = pressure_function(pop[i]);
 					if (values[i] < min)
 						min = values[i];
 					else if (values[i] > max)
@@ -190,14 +194,13 @@ namespace AGE3
 				}
 				pop = new_pop;
 				best = min;
-				printf("%f\n", best);
+				//std::cout << (problem.num_clauses - best)/problem.num_clauses << std::endl;
 			} while (!stop_condition());
 
-			//if (best < global_best)
-			//	global_best = best;
+		//	if (best < global_best)
+		//		global_best = best;
 		//}
 
-		//return global_best;
-			return best;
+		return global_best;
 	}
 }

@@ -121,7 +121,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="SourceAGE3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlgorithmsAGE0.h" />
