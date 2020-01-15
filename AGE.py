@@ -20,17 +20,17 @@ supported_functions_age0 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
 supported_functions_age1 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
 supported_functions_age2 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
 files_age3 = \
-    [r'D:\facultate\anul_2\A.G.E\frb30-15-1.cnf',
-     r'D:\facultate\anul_2\A.G.E\frb35-17-1.cnf',
-     r'D:\facultate\anul_2\A.G.E\frb40-19-1.cnf',
-     r'D:\facultate\anul_2\A.G.E\frb45-21-1.cnf',
-     r'D:\facultate\anul_2\A.G.E\frb50-23-1.cnf',
-     r'D:\facultate\anul_2\A.G.E\frb53-24-1.cnf',
-     r'D:\facultate\anul_2\A.G.E\frb56-25-1.cnf',
-     r'D:\facultate\anul_2\A.G.E\frb59-26-1.cnf',
-     r'D:\facultate\anul_2\A.G.E\RTI_k3_n100_m429_0.cnf',
-     r'D:\facultate\anul_2\A.G.E\uf250-01.cnf',
-     r'D:\facultate\anul_2\A.G.E\CBS_k3_n100_m449_b90_0.cnf'
+    [r'D:\facultate\anul_2\A.G.E\instances\frb30-15-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\frb35-17-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\frb40-19-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\frb45-21-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\frb50-23-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\frb53-24-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\frb56-25-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\frb59-26-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\RTI_k3_n100_m429_0.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\uf250-01.cnf',
+     r'D:\facultate\anul_2\A.G.E\instances\CBS_k3_n100_m449_b90_0.cnf'
      ]
 
 
