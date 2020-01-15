@@ -52,9 +52,9 @@ namespace AGE3
 			int count = 0;
 			for (auto& c : problem.clauses)
 			{
-				for(auto& var_num : c)
+				for (auto& var_num : c)
 				{
-					if (((var_num > 0) ? 1 : -1) * candidate.value[(var_num > 0) ? var_num - 1 : abs(var_num + 1)])
+					if (((var_num > 0) ? candidate.value[(var_num > 0) ? var_num - 1 : abs(var_num + 1)] : !candidate.value[(var_num > 0) ? var_num - 1 : abs(var_num + 1)]))
 					{
 						count++;
 						break;
@@ -68,8 +68,13 @@ namespace AGE3
 		//VARS
 		float global_best = numeric_limits<float>::infinity();
 
+		std::cout << "[";
+
 		//RUN
-		//for (unsigned run = 0; run < 15; run++) {
+		auto start1 = std::chrono::system_clock::now();
+		do {
+			auto start2 = std::chrono::system_clock::now();
+			
 			array<Chromosome, pop_size> pop;
 			unsigned current_generation = 0;
 
@@ -121,6 +126,20 @@ namespace AGE3
 				for (auto& c : pop)
 				{
 					c.mutate(p_m);
+
+					for (auto& cl : problem.clauses)
+					{
+						for (auto& var_num : cl)
+						{
+							if (c.value[(var_num > 0) ? var_num - 1 : abs(var_num + 1)] == 0)
+							{
+								c.value[(var_num > 0) ? var_num - 1 : abs(var_num + 1)].flip();
+								goto endgreedy;
+							}
+						}
+					}
+				endgreedy:
+					auto x = 0;
 				}
 
 				//Crossing phase
@@ -194,12 +213,69 @@ namespace AGE3
 				}
 				pop = new_pop;
 				best = min;
-				//std::cout << (problem.num_clauses - best)/problem.num_clauses << std::endl;
-			} while (!stop_condition());
+			} while (!stop_condition() && (!(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start2).count()> 15)));
 
-		//	if (best < global_best)
-		//		global_best = best;
-		//}
+			std::cout << float(float(problem.num_clauses - best) / float(problem.num_clauses)) << ",";
+
+			if (best < global_best)
+				global_best = best;
+
+		} while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start1).count() < 250);
+
+		std::cout << "0]";
+
+		return global_best;
+	}
+
+	float random_search(const ProblemInstance& problem)
+	{
+		Chromosome c;
+		c.value.resize(problem.num_variables);
+
+		const auto pressure_function = [&](Chromosome candidate) -> float
+		{
+			int count = 0;
+			for (auto& c : problem.clauses)
+			{
+				for (auto& var_num : c)
+				{
+					if (((var_num > 0) ? candidate.value[(var_num > 0) ? var_num - 1 : abs(var_num + 1)] : !candidate.value[(var_num > 0) ? var_num - 1 : abs(var_num + 1)]))
+					{
+						count++;
+						break;
+					}
+				}
+			}
+			return problem.num_clauses - count;
+		};
+		
+		unsigned global_best = problem.clauses.size();
+
+		std::cout << "[";
+
+		for (unsigned i = 0; i < 16; ++i) {
+			unsigned best_val = problem.clauses.size();
+
+			srand(time(nullptr));
+			const auto start = std::chrono::system_clock::now();
+			do
+			{
+				c.mutate(0.5f);
+				auto eval = pressure_function(c);
+				if (eval < best_val)
+				{
+					best_val = eval;
+				}
+
+			} while (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() < 7);
+
+			if (best_val < global_best)
+				global_best = best_val;
+
+			std::cout << float(float(problem.clauses.size() - best_val) / float(problem.clauses.size())) << ",";
+		}
+
+		std::cout << "0]";
 
 		return global_best;
 	}

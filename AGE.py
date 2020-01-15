@@ -8,15 +8,38 @@ import numpy
 import datetime
 import sys
 import matplotlib.pyplot as plt
+import subprocess
+import re
 
 sys.setrecursionlimit(100)
 
 project_root = './cpp_proj/AGEProj'
-executable_path = './cpp_proj/AGEProj/Release/'
+executable_path = './cpp_proj/AGEProj/x64/Release/'
 devenv_path = r'"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/Common7/IDE/"'
 supported_functions_age0 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
 supported_functions_age1 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
 supported_functions_age2 = ['rastrigin', 'schwefel', 'rosenbrock', 'sphere']
+files_age3 = \
+    [r'D:\facultate\anul_2\A.G.E\frb30-15-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\frb35-17-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\frb40-19-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\frb45-21-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\frb50-23-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\frb53-24-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\frb56-25-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\frb59-26-1.cnf',
+     r'D:\facultate\anul_2\A.G.E\RTI_k3_n100_m429_0.cnf',
+     r'D:\facultate\anul_2\A.G.E\uf250-01.cnf',
+     r'D:\facultate\anul_2\A.G.E\CBS_k3_n100_m449_b90_0.cnf'
+     ]
+
+
+def age3_run_function(arg: str, file: str, id: int):
+    os.environ["Path"] = os.path.abspath(executable_path)
+    result = subprocess.run(['AGEProj', arg, file], stdout=subprocess.PIPE)
+    with open('age3run' + str(id) + '.txt', 'w') as f:
+        f.write(result.stdout.decode('utf-8'))
+        f.write(file)
 
 
 def generate_output_func(an_type: str, name: str):
@@ -37,7 +60,6 @@ def main(argv):
         print('HELP: pass -b for building the executable from the sln')
         print('      pass -r for running the analysis on the available functions + age0/age1 type analyzer')
         print('      pass -a to generate statistics + age0/age1 type analyzer')
-        print('      pass -g to generate utility tables for age3 - SAT problem')
         print('      => Analysers : age0 - generates output for two algorithms:')
         print('      =>                    a deterministic binary search algorithm')
         print('      =>                    a heuristic algorithm')
@@ -46,7 +68,7 @@ def main(argv):
         print('      =>                    hill_climbing best improve')
         print('      =>                    simulated_annealing')
 
-    opts, args = getopt.getopt(sys.argv[1:], "br:a:g:", ["analyze=", "run=", "generate="])
+    opts, args = getopt.getopt(sys.argv[1:], "br:a:", ["analyze=", "run="])
 
     for opt, arg in opts:
 
@@ -91,6 +113,14 @@ def main(argv):
             if arg == 'age2p':
                 for func in supported_functions_age2:
                     t = threading.Thread(target=generate_output_func, args=(arg, func,))
+                    t.start()
+                    threads.append(t)
+
+            if arg == 'age3':
+                counter = 0
+                for f in files_age3:
+                    counter += 1
+                    t = threading.Thread(target=age3_run_function, args=(arg, f, counter,))
                     t.start()
                     threads.append(t)
 
@@ -386,65 +416,40 @@ def main(argv):
                     fig.savefig(func + '.png')
                     plt.show()
 
-        # generate utils for SAT
-        if opt in ('-g', '--generate'):
-            with open(arg, 'r') as gf:
-                variables = 0
-                clauses = 0
-                main_str = ''
-                decl_str = ''
-                out_decl_str = ''
-                vec_str = ''
-                end_str = '\n};'
+            if arg == 'age3':
+                final_table = []
                 counter = 0
-                for line in gf.readlines():
-                    if line[0] == 'c':
-                        continue
-                    if line[0] == 'p':
-                        splices = line.split(' ')
-                        if splices[1] != 'cnf':
-                            raise NotImplementedError
-                        variables = int(splices[2])
-                        clauses = int(splices[3])
-                        main_str = 'struct Problem {\n\tstatic std::bitset<' + str(variables) + '> bitstring;\n\ttypedef bool(*clause_ptr)();\n\tstatic clause_ptr clauses[' + str(clauses) + '];\n'
-                        out_decl_str = '};\nProblem::clause_ptr Problem::clauses[' + str(clauses) + '] = {\n'
-                        continue
-                    if not any([str(d) in line for d in range(0, 10)]):
-                        continue
-                    splices = line.split(' ')
-                    if all('\n'in spl or spl == '' for spl in splices):
-                        continue
-                    try:
-                        if not (all([int(spl) for spl in splices if '\n' not in spl and spl != ''])):
-                            continue
-                    except ValueError:
-                        continue
-                    decl_str += '\tstatic bool clause' + str(counter) + '(){return '
-                    vec_str += '&clause' + str(counter) + ',\n'
+                h_table_top = {
+                    'name': 0,
+                    'max': 0,
+                    'min': 0,
+                    'mean': 0,
+                    'sd': 0
+                }
+                print(*h_table_top.keys())
+                for fn in files_age3:
                     counter += 1
-                    for num in splices:
-                        try:
-                            val = int(num)
-                        except ValueError:
-                            continue
-                        if val < 0:
-                            decl_str += 'not(bitstring[' + str(abs(val) - 1) + '])+'
-                        elif val > 0:
-                            decl_str += 'bitstring[' + str(val - 1) + ']+'
-                    decl_str = decl_str[:-1] + ';}\n'
-                vec_str = vec_str[:-2]
+                    with open('age3run' + str(counter) + '.txt', 'r') as f:
+                        all_b = f.read()
+                        m = re.findall(r'\[.*\]', all_b)[0]
+                        results = json.loads(m)
+                        results = results[:-1]
+                        h_table_line = {
+                            'name': fn,
+                            'max': numpy.max(results),
+                            'min': numpy.min(results),
+                            'mean': numpy.mean(results),
+                            'sd': numpy.std(results)
+                        }
+                        prettified_strings = []
+                        for cand, val in h_table_line.items():
+                            if type(val) == float or type(val) == numpy.float64:
+                                prettified_strings.append('{:.5f}'.format(val))
+                            else:
+                                prettified_strings.append(str(val))
+                        print(' & '.join([val for val in prettified_strings]), end=' \\\\\n')
 
-                print(main_str)
-                print(decl_str)
-                print(out_decl_str)
-                print(vec_str)
-                print(end_str)
-                with open('gen_age3_utils.txt', 'w') as gage3:
-                    gage3.write(main_str)
-                    gage3.write(decl_str)
-                    gage3.write(out_decl_str)
-                    gage3.write(vec_str)
-                    gage3.write(end_str)
+
 
 
 if __name__ == "__main__":

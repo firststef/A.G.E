@@ -186,12 +186,11 @@ int main(int argc, char** argv) {
 		const auto start = std::chrono::system_clock::now();
 		auto file = parse_file(argv[2]);
 		auto x = AGE3::sat_solver(file);
-		std::cout << (file.num_clauses - x)/file.num_clauses << std::endl;
-		std::cout << std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - start).count() << std::endl;
+		//auto y = AGE3::random_search(file);
 	}
 	else
 	{
-	
+
 		printf("Command not recognized\n");
 	}
 
