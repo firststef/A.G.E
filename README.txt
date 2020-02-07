@@ -1,3 +1,5 @@
+
+AGE.py commands:
 ================== A.G.E. script ==================
 ### 2019 - Petrovici Stefan ###
 
